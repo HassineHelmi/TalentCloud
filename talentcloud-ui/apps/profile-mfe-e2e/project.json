@@ -1,0 +1,10 @@
+{
+  "name": "profile-mfe-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/profile-mfe-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["profile-mfe"],
+  "// targets": "to see all targets run: nx show project profile-mfe-e2e --web",
+  "targets": {}
+}
