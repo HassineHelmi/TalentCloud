@@ -13,6 +13,9 @@ public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedA
 
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
+
+        /// testt
+
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         // Extract realm roles
