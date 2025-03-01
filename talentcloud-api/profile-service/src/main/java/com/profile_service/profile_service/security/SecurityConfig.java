@@ -25,6 +25,7 @@ public class SecurityConfig {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/swagger-ui.html","/swagger-ui/**", "/v3/api-docs/**", "/webjars/**", "/v3/api-docs.yaml").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api/auth/register").permitAll()
                         .pathMatchers("/api/auth/admin/**").hasRole("ADMIN")
