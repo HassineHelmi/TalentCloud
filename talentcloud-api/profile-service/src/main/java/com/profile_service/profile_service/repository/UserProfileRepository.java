@@ -1,8 +1,14 @@
-//package com.profile_service.profile_service.repository;
-//
-//import org.springframework.data.jpa.repository.JpaRepository;
-//
-//import com.profile_service.profile_service.model.UserProfile;
-//
-//public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
-//}
+package com.profile_service.profile_service.repository;
+
+import com.profile_service.profile_service.dto.UserProfileDTO;
+
+import com.profile_service.profile_service.model.UserProfile;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
+
+@Repository
+public interface UserProfileRepository extends ReactiveCrudRepository<UserProfile, Long> {
+    Mono<UserProfile> findByEmail(String email);
+}
