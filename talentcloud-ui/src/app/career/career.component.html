@@ -13,17 +13,17 @@
                 <!-- Step 1: Choose Manual or Upload Resume -->
                 <div *ngIf="isStep1Visible" class="edit-profile-sec">
                     <h5>How do you want to fill your profile?</h5>
-                    <br>
                     <hr>
                     <div class="d-flex justify-content-between">
-                        <button class="btn btn-solid me-2" (click)="showManualForm()">Fill Manually</button>
-                        <button class="btn btn-solid" (click)="showUploadForm()">Upload Resume</button>
+                        <button class="btn btn-solid w-50 me-2" (click)="showManualForm()">Fill Manually</button>
+                        <button class="btn btn-warning w-50" (click)="showUploadForm()">Upload Resume</button>
                     </div>
                 </div>
 
                 <!-- Step 2: Resume Upload Form -->
                 <div *ngIf="isResumeUploadVisible" class="edit-profile-sec">
                     <h5>Upload Your Resume</h5>
+                    <hr>
                     <input type="file" id="resumeUpload" class="form-control mb-2" (change)="uploadResume($event)">
                     <p *ngIf="uploadSuccess" class="text-success">Resume uploaded successfully!</p>
                 </div>
@@ -102,6 +102,7 @@
     </div>
 </div>
 <!-- Edit Profile Modal End -->
+
 
 
 <!-- header start -->
