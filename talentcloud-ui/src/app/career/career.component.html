@@ -13,9 +13,11 @@
                 <!-- Step 1: Choose Manual or Upload Resume -->
                 <div *ngIf="isStep1Visible" class="edit-profile-sec">
                     <h5>How do you want to fill your profile?</h5>
+                    <br>
+                    <hr>
                     <div class="d-flex justify-content-between">
-                        <button class="btn btn-primary w-50 me-2" (click)="showManualForm()">Fill Manually</button>
-                        <button class="btn btn-secondary w-50" (click)="showUploadForm()">Upload Resume</button>
+                        <button class="btn btn-solid me-2" (click)="showManualForm()">Fill Manually</button>
+                        <button class="btn btn-solid" (click)="showUploadForm()">Upload Resume</button>
                     </div>
                 </div>
 
