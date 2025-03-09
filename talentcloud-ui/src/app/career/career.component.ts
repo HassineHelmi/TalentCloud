@@ -1,66 +1,137 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Skill } from '../data/Skill';
+import { UserProfile } from '../data/UserProfile';
+import { Post } from '../data/Post';
+import { JobSuggestion } from '../data/JobSuggestion';
+import { Achievement } from '../data/Achievement';
+import { InterviewSession } from '../data/InterviewSession';
+import { Notification } from '../data/Notification';
 
 @Component({
   selector: 'app-career',
   templateUrl: './career.component.html',
   styleUrl: './career.component.scss',
   standalone: true,
-  imports: [CommonModule, RouterModule ]
+  imports: [CommonModule, RouterModule, FormsModule]
 })
 export class CareerComponent {
 
-  skills: Skill[] = [
-    {src:"#", name: 'Programming', description: ['Code Craftsmanship.'] },
-    {src:"#", name: 'Backend', description: ['Key frameworks for backend development.' ]},
-    { src:"#",name: 'Frontend', description: ['Modern frontend technologies.'] },
-    { src:"#",name: 'Databases', description: ['Skills with relational and NoSQL databases.'] },
-    { src:"#",name: 'Cloud', description: ['Platforms and tools for cloud development and CI/CD pipelines.'] },
-    { src:"#",name: 'Methodologies', description: ['Agile principles and PMP certified consultants.'] }
-  ];
+  // Form state management
+  isStep1Visible: boolean = true;
+  isManualFormVisible: boolean = false;
+  isResumeUploadVisible: boolean = false;
+  uploadSuccess: boolean = false;
 
-  
-  
+  userProfile: UserProfile = {
+    id: 'user-123',
+    name: 'Candidate Test',
+    email: 'candidate.test@gmail.com',
+    profileImageUrl: 'assets/images/user-profile.jpg',
+    experience: 2,
+    languages: 3,
+    projects: 5,
+    education:"Esprit",
+    jobTitle: 'Development Engineer',
+    skills: ['Java', 'Angular'],
+    location: 'London',
+    connections: 15,
+    posts: 2
+  };
 
-  jobs = [
+  posts: Post[] = [
     {
-      title: 'Ferrybox Dashboard (CLAIM)',
-      description: "Developed Africa's first web solution for tracking, analyzing, and sharing Mediterranean surface water data.",
-      backend: 'Java',
-      frontend: 'Angular',
-      integration:'Docker',
-      database:'PostgreSQL',
-      routerLink:"career-details/Ferrybox"
-    },
-    {
-      title: "Sof'TT",
-      description: "Built a platform to enhance productivity at Sofrecom: features like API/LDAP integration, cron jobs, and CI/CD.",
-      backend: 'Java',
-      frontend: 'Angular',
-      integration:'Gitlab',
-      database:'PostgreSQL',
-      routerLink:"/career-details/TT"
-    },
-    {
-      title: 'TeamTool',
-      description: "Maintained microservices architecture for the project, ESP32 connection.",
-      backend: 'Java',
-      frontend: 'Angular',
-      integration:'AWS',
-      database:'MySQL',
-      routerLink:"/career-details/TeamTool"
-    },
-    {
-      title: 'Teams+',
-      description: "Created a tool to streamline collaboration for Eurostar, backend/frontend integration, automated data refresh processes.",
-      backend: 'Java',
-      frontend: 'Angular',
-      integration:'Azure',
-      database:'MongoDB',
-      routerLink:"/career-details/Teams"
+      id: 'post-1',
+      userId: 'user-123',
+      userName: 'Candidate Test',
+      userProfileImage: 'assets/images/user-profile.jpg',
+      content: 'New achievements added to my profile!',
+      tags: ['JavaProgramming', 'OOP', 'Solid'],
+      images: ['assets/images/certification1.jpg', 'assets/images/certification2.jpg'],
+      createdAt: new Date()
     }
   ];
 
+  jobSuggestions: JobSuggestion[] = [
+    {
+      id: 'job-1',
+      title: 'Scrum Master',
+      companyLogoUrl: 'assets/images/company1.png',
+      experienceRequired: '2-3 Years',
+      skillsRequired: ['Agile', 'Scrum']
+    },
+    {
+      id: 'job-2',
+      title: 'Automation Tester',
+      companyLogoUrl: 'assets/images/company2.png',
+      experienceRequired: 'Git/Github experience',
+      skillsRequired: ['Selenium', 'Cypress']
+    }
+  ];
+
+  achievements: Achievement[] = [
+    {
+      id: 'cert-1',
+      title: 'Certified Kubernetes Administrator',
+      organization: 'Linux Foundation',
+      certificateUrl: 'assets/images/certification3.jpg',
+      dateAchieved: new Date('2024-03-15')
+    }
+  ];
+
+  interviewSession: InterviewSession = {
+    id: 'interview-1',
+    date: new Date('2025-09-05'),
+    participantCount: 56,
+    interviewMode: 'Online'
+  };
+
+  notifications: Notification[] = [
+    {
+      id: 'notif-1',
+      type: 'interview_invite',
+      message: 'Your interview starts soon!',
+      createdAt: new Date()
+    }
+  ];
+
+  /**
+   * Show the manual profile form
+   */
+  showManualForm() {
+    this.isStep1Visible = false;
+    this.isManualFormVisible = true;
+  }
+
+  /**
+   * Show the resume upload form
+   */
+  showUploadForm() {
+    this.isStep1Visible = false;
+    this.isResumeUploadVisible = true;
+  }
+
+  /**
+   * Handle resume upload event
+   */
+  uploadResume(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.uploadSuccess = true;
+      setTimeout(() => {
+        this.isResumeUploadVisible = false;
+        this.isManualFormVisible = true;
+      }, 1500);
+    } else {
+      alert("Please select a file before uploading.");
+    }
+  }
+
+  /**
+   * Enable editing a specific field
+   */
+  editField(field: keyof UserProfile, inputValue: string) {
+    (this.userProfile as any)[field] = inputValue;
+  }
 }
