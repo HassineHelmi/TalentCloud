@@ -3,7 +3,6 @@ package com.profile_service.profile_service.controller;
 import com.profile_service.profile_service.model.Document;
 import com.profile_service.profile_service.service.DocumentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +14,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class DocumentController {
 
-    @Autowired
-    private DocumentService documentService;
+    private final DocumentService documentService;
 
     @PostMapping
     public Mono<ResponseEntity<Document>> uploadDocument(@PathVariable Long userId,

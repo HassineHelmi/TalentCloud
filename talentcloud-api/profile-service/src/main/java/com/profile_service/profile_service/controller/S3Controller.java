@@ -2,7 +2,6 @@ package com.profile_service.profile_service.controller;
 
 import com.profile_service.profile_service.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +14,8 @@ import java.io.IOException;
 @RequestMapping("/s3")
 @RequiredArgsConstructor
 public class S3Controller {
-    @Autowired
-    private  S3Service s3Service;
+
+    private final S3Service s3Service;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
