@@ -3,8 +3,9 @@ package com.profile_service.profile_service.service;
 import com.profile_service.profile_service.model.UserProfile;
 import com.profile_service.profile_service.repository.UserProfileRepository;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
+
 
 @Service
 public class UserProfileService {
