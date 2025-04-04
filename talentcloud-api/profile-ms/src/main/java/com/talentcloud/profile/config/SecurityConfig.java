@@ -22,7 +22,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/profile/**").hasAnyAuthority(Role.ROLE_ADMIN.getRole(), Role.ROLE_CLIENT.getRole())  // Protect '/profile/**'
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**", "/v3/api-docs.yaml").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/profile/**")
+                        .hasAnyAuthority(Role.ROLE_ADMIN.getRole(), Role.ROLE_CLIENT.getRole())
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -49,5 +52,4 @@ public class SecurityConfig {
 
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
-
 }
