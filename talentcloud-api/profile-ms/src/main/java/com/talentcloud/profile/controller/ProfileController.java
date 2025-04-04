@@ -14,13 +14,17 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    @PreAuthorize("hasAnyRole(Role.ROLE_ADMIN.getRole(), Role.ROLE_CLIENT.getRole())")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
     @GetMapping("/{id}")
     public ResponseEntity<UserProfileDto> getProfile(@PathVariable String id) {
-        return ResponseEntity.ok(profileService.getProfile(id));
+        UserProfileDto profile = profileService.getProfile(id);
+        if (profile == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(profile);
     }
 
-    @PreAuthorize("hasRole(Role.ROLE_CANDIDATE.getRole())")
+    @PreAuthorize("hasRole('ROLE_CANDIDATE')")
     @PostMapping
     public ResponseEntity<String> createProfile(@RequestBody UserProfileDto profile) {
         profileService.saveProfile(profile);

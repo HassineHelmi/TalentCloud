@@ -1,8 +1,12 @@
 package com.talentcloud.profile.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserProfileDto {
     private String id;
     private String name;
@@ -10,6 +14,4 @@ public class UserProfileDto {
     private String jobTitle;
     private String location;
 
-    public UserProfileDto(String id, String johnDoe, String s, String engineer, String paris) {
-    }
 }
