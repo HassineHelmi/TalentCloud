@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.springframework.http.*;
@@ -37,8 +39,41 @@ public class AuthService {
     }
 
     public ResponseEntity<String> login(LoginRequest request) {
-        // TODO: Implement real login with Keycloak token API
-        return ResponseEntity.ok("mock-token-for-" + request.getUsername());
+            try {
+                logger.info("Attempting login for user: {}", request.getUsername());
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+                MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+                body.add("grant_type", "password");
+                body.add("client_id", "your-client-id");
+                body.add("username", request.getUsername());
+                body.add("password", request.getPassword());
+
+                HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+
+                String tokenUrl = "http://localhost:8080/realms/talentcloud/protocol/openid-connect/token";
+
+                ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, entity, String.class);
+
+                if (!response.getStatusCode().is2xxSuccessful()) {
+                    logger.error("Failed to login user: {}", response.getBody());
+                    return ResponseEntity.status(response.getStatusCode())
+                            .body("Login failed: " + response.getBody());
+                }
+
+                JsonNode tokenJson = objectMapper.readTree(response.getBody());
+                String accessToken = tokenJson.get("access_token").asText();
+
+                logger.info("Login successful for user: {}", request.getUsername());
+                return ResponseEntity.ok(accessToken);
+
+            } catch (Exception e) {
+                logger.error("Login failed", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Login failed due to an internal error: " + e.getMessage());
+            }
     }
 
     public ResponseEntity<String> register(RegisterRequest request) {
