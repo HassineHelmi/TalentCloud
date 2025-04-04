@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  SPRING_PROFILES_ACTIVE: prod
+  KEYCLOAK_ISSUER: https://keycloak.talentcloud-dev.com/realms/talentcloud
+  JWT_AUDIENCE: account
+  PROFILE_SERVICE_BASE_URL: http://profile-ms:8082

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile-ms
+  template:
+    metadata:
+      labels:
+        app: profile-ms
+    spec:
+      containers:
+        - name: profile-ms
+          image: your-docker-repo/profile-ms:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-ms
+spec:
+  selector:
+    app: profile-ms
+  ports:
+    - port: 8082
+      targetPort: 8082

@@ -1,0 +1,8 @@
+bases:
+  - ../../base
+
+configMapGenerator:
+  - name: app-config
+    envs:
+      - ../../auth-ms/.env
+      - ../../profile-ms/.env
