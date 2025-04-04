@@ -1,0 +1,115 @@
+{
+  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "name": "career-portal",
+  "projectType": "application",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
+  "sourceRoot": "src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:application",
+      "options": {
+        "outputPath": "dist/career-portal",
+        "index": "src/index.html",
+        "browser": "src/main.ts",
+        "polyfills": [
+          "zone.js"
+        ],
+        "tsConfig": "tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "src/fulllogo_transparent_nobuffer.ico",
+          "src/assets"
+        ],
+        "styles": [
+          "src/styles.scss",
+          "src/assets/css/style.css"
+        ],
+        "scripts": [
+          "src/assets/js/jquery-3.6.0.min.js",
+          "src/assets/js/popper.min.js",
+          "src/assets/js/slick.js",
+          "src/assets/js/custom-slick.js",
+          "src/assets/js/counter.js",
+          "src/assets/js/feather.min.js",
+          "src/assets/js/popover.js",
+          "src/assets/js/emojionearea.min.js",
+          "src/assets/js/bootstrap.js",
+          "src/assets/js/chatbox.js",
+          "src/assets/js/lazysizes.min.js",
+          "src/assets/js/theme-setting.js",
+          "src/assets/js/script.js"
+        ],
+        "server": "src/main.server.ts",
+        "prerender": true,
+        "ssr": {
+          "entry": "server.ts"
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "2mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "career-portal:build:production"
+        },
+        "development": {
+          "buildTarget": "career-portal:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "career-portal:build"
+      }
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ],
+        "tsConfig": "tsconfig.spec.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "src/fulllogo_transparent_nobuffer.ico",
+          "src/assets"
+        ],
+        "styles": [
+          "src/styles.scss"
+        ],
+        "scripts": []
+      }
+    }
+  }
+}

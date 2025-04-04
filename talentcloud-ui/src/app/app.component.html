@@ -1,1 +1,15 @@
 <router-outlet></router-outlet>
+
+<!-- Add the application title -->
+<h1 style="text-align: center; margin-top: 20px;">career-portal</h1>
+
+<!-- Add the buttons where you want them to appear -->
+<div style="text-align: center; margin-top: 20px;">
+  <button pButton label="Show Popup (No Auto Close)" (click)="openPopup(false)"></button>
+  <button pButton label="Show Popup (Auto Close after 2s)" (click)="openPopup(true)" style="margin-left: 10px;"></button>
+</div>
+
+<!-- Job Suggestion Component Here -->
+
+<!-- Ensure the popup is inside the body -->
+<app-popup [visible]="showPopup" [autoClose]="autoClosePopup" (close)="closePopup()"></app-popup>

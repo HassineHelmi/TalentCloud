@@ -8,13 +8,18 @@ import { JobSuggestion } from '../data/JobSuggestion';
 import { Achievement } from '../data/Achievement';
 import { InterviewSession } from '../data/InterviewSession';
 import { Notification } from '../data/Notification';
+import {Candidat_mfComponent} from "../candidat_mf/candidat_mf.component";
+import {AchievementsComponent} from "../achievements/achievements.component";
+import {NavbarComponent} from "../navbar/navbar.component";
+import { PostComponent } from '../post/post.component';
+import {JobSuggestionComponent} from "../job-suggestion/job-suggestion.component";
+import {InterviewSessionComponent} from "../interview/interview.component"; // ✅ Import PostComponent
 
 @Component({
-  selector: 'app-career',
-  templateUrl: './career.component.html',
-  styleUrl: './career.component.scss',
-  standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule]
+    selector: 'app-career',
+    templateUrl: './career.component.html',
+    styleUrl: './career.component.scss',
+  imports: [CommonModule, RouterModule, FormsModule, Candidat_mfComponent, AchievementsComponent, NavbarComponent, PostComponent, JobSuggestionComponent, InterviewSessionComponent]
 })
 export class CareerComponent {
 
