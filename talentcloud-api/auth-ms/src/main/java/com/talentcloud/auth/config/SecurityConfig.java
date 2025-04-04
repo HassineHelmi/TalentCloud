@@ -28,8 +28,10 @@ public class SecurityConfig {
                         .pathMatchers("/swagger-ui.html","/swagger-ui/**", "/v3/api-docs/**", "/webjars/**", "/v3/api-docs.yaml").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api/auth/register").permitAll()
-                        .pathMatchers("/api/auth/admin/**").hasRole(Role.ROLE_ADMIN.getRole())
-                        .pathMatchers("/api/auth/client/**").hasRole(Role.ROLE_CLIENT.getRole())
+                        .pathMatchers("/api/auth/login").permitAll()
+//                        .pathMatchers("/api/auth/admin/**").hasRole(Role.ROLE_ADMIN.getRole())
+//                        .pathMatchers("/api/auth/client/**").hasRole(Role.ROLE_CLIENT.getRole())
+//                        .pathMatchers("/api/auth/candidate/**").hasRole(Role.ROLE_CANDIDATE.getRole())
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));

@@ -24,8 +24,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**", "/v3/api-docs.yaml").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/profile/**")
-                        .hasAnyAuthority(Role.ROLE_ADMIN.getRole(), Role.ROLE_CLIENT.getRole())
+                        .requestMatchers("/api/profile/**")
+                        .hasAnyAuthority(Role.ROLE_ADMIN.getRole(), Role.ROLE_CLIENT.getRole(),Role.ROLE_CANDIDATE.getRole())
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
