@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -32,26 +33,14 @@ public class SecurityConfig {
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> {
-                            try {
                                 jwt.decoder(jwtDecoder());
-                            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-                                throw new RuntimeException(e);
-                            }
                         }));
 
         return http.build();
     }
 
     @Bean
-    public JwtDecoder jwtDecoder() throws NoSuchAlgorithmException, InvalidKeySpecException {
-
-        String base64PublicKey = "test-public-key";
-
-        byte[] decodedKey = Base64.getDecoder().decode(base64PublicKey);
-
-        RSAPublicKey publicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
-                .generatePublic(new X509EncodedKeySpec(decodedKey));
-
-        return NimbusJwtDecoder.withPublicKey(publicKey).build();
+    JwtDecoder jwtDecoder() {
+        return JwtDecoders.fromIssuerLocation("http://localhost:8080/realms/talentcloud");
     }
 }
