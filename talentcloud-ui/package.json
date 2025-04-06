@@ -40,8 +40,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.2.2",
-    "@nx/angular": "20.x.x",
-    "nx": "16.x.x or 20.x.x"
+    "@nx/angular": "20.7.1",
+    "nx": "20.7.1"
 
   }
 }
