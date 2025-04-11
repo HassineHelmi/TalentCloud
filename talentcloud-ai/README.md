@@ -1,5 +1,14 @@
 # AI-Powered Resume Analyzer
 
+## 🙌 **How to run on Windows ?**
+
+- Create local virtual env
+- Install Rust (https://rustup.rs/)
+- Add .cargo/bin to PATH
+- Import requirements
+- Run: streamlit run app.py
+- Visit: http://localhost:8501/
+
 **AI-Powered Resume Analyzer**, a cutting-edge application designed to mimic the expertise of an HR professional! This tool leverages the power of **Google Generative AI** to analyze resumes, evaluate job compatibility, and offer actionable insights for career enhancement.
 
 ---
