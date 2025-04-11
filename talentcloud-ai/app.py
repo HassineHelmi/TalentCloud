@@ -4,22 +4,34 @@ import json
 import requests
 import streamlit as st
 import boto3
-from pymongo import MongoClient
+import psycopg2
+# from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson import ObjectId
 import io
 import pandas as pd
 import google.generativeai as genai
 import re
+from datetime import datetime
 
 # --- Load .env ---
 load_dotenv()
+
+# PostgreSQL connection config
+PG_CONN = psycopg2.connect(
+    dbname="profiledb",
+    user="postgres",
+    password="postgres",
+    host="localhost",
+    port="5432"
+)
+PG_CURSOR = PG_CONN.cursor()
 
 # --- Config ---
 S3_BUCKET = "tekbootwebsite2"
 REGION = "us-east-1"
 POLLING_INTERVAL = 2
-MONGO_URI = "mongodb://localhost:27017"
+# MONGO_URI = "mongodb://localhost:27017"
 DB_NAME = "tekboot"
 COLLECTION_NAME = "candidat_inf"
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -30,10 +42,10 @@ if not GOOGLE_API_KEY:
     st.stop()
 
 # --- Clients ---
-s3_client = boto3.client("s3", region_name=REGION)
+s3_client = boto3.client("s3", region_name=REGION) 
 textract_client = boto3.client("textract", region_name=REGION)
-mongo_client = MongoClient(MONGO_URI)
-mongo_collection = mongo_client[DB_NAME][COLLECTION_NAME]
+# mongo_client = MongoClient(MONGO_URI)
+# mongo_collection = mongo_client[DB_NAME][COLLECTION_NAME]
 
 # --- Gemini config ---
 genai.configure(api_key=GOOGLE_API_KEY)
@@ -84,7 +96,7 @@ def extract_information(text):
     # Regex to extract phone number
     phone_match = re.search(r"(?:\+\d{1,3}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}", text)
     if phone_match:
-        info['contact'] = phone_match.group(0).strip()
+        info['contact'] = ""
 
     # Regex to extract skills (focused on technical skills)
     skills_match = re.findall(r"\b(Java|Spring|PostgreSQL|MongoDB|Angular|Vue.js|Docker|Kubernetes|Python|SQL|Hibernate|ElasticSearch|JUnit|Mockito|CI/CD|Git|Bitbucket|Jenkins|Azure DevOps)\b", text)
@@ -143,10 +155,8 @@ def process_resume(file):
     responses = get_textract_results(job_id)
     text = extract_text(responses)
 
-    # Extract information using Gemini
+    # Extract information
     gemini_data = analyze_resume_with_gemini(text)
-
-    # Extract additional information via Regex
     regex_data = extract_information(text)
 
     full_data = {
@@ -157,8 +167,58 @@ def process_resume(file):
         **regex_data
     }
 
-    mongo_collection.insert_one(full_data)
+    # Insert into PostgreSQL
+    PG_CURSOR.execute("""
+        INSERT INTO public.user_profile (
+            filename, resume_text, processed_at,
+            name, email, contact,
+            job_category, overall_evaluation,
+            strengths, weaknesses, missing_skills, recommended_courses, skills,
+            experience, certifications
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """, (
+        full_data.get("filename"),
+        full_data.get("resume_text"),
+        datetime.strptime(full_data.get("processed_at"), "%Y-%m-%d %H:%M:%S"),
+        full_data.get("name"),
+        full_data.get("email"),
+        full_data.get("contact"),
+        full_data.get("job_category"),
+        full_data.get("overall_evaluation"),
+        full_data.get("strengths"),
+        full_data.get("weaknesses"),
+        full_data.get("missing_skills"),
+        full_data.get("recommended_courses"),
+        full_data.get("skills"),
+        json.dumps(full_data.get("experience") or {}),
+        json.dumps(full_data.get("certifications") or {})
+    ))
+
+    PG_CONN.commit()
     return full_data
+    # job_id = start_textract_job(S3_BUCKET, file)
+    # if not check_job_complete(job_id):
+    #     return None
+
+    # responses = get_textract_results(job_id)
+    # text = extract_text(responses)
+
+    # # Extract information using Gemini
+    # gemini_data = analyze_resume_with_gemini(text)
+
+    # # Extract additional information via Regex
+    # regex_data = extract_information(text)
+
+    # full_data = {
+    #     "filename": file,
+    #     "resume_text": text,
+    #     "processed_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+    #     **gemini_data,
+    #     **regex_data
+    # }
+
+    # mongo_collection.insert_one(full_data)
+    # return full_data
 
 # --- Display helper --- 
 def clean_for_display(obj):
