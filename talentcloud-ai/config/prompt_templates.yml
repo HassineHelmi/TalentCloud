@@ -1,0 +1,9 @@
+default_analysis_prompt: |
+  Tu es un expert RH. À partir du CV ci-dessous, détecte automatiquement :
+  - la catégorie de métier
+  - compétences actuelles / manquantes
+  - forces / faiblesses
+  - recommandations de formation
+
+  CV:
+  {cv_text}

@@ -86,3 +86,96 @@ Welcome contributions to make this tool better!
 
 Ensure that you have access to the API key for Google Gemini and that you've set up authentication correctly using:
 Downloading google_auth_oauthlib-1.2.1-py2.py3-none-any.whl (24 kB)
+
+# 🧠 Generative AI Resume Processor
+
+This project processes resumes (CVs) using Gemini and OpenAI models, extracts key candidate information, and stores results in PostgreSQL. It's designed using a modular, scalable structure for easy maintenance and experimentation.
+
+---
+
+## 📂 Project Structure
+
+```bash
+generative_ai_project/
+│
+├── config/                  # Configuration (YAML-based)
+│   ├── __init__.py
+│   ├── model_config.yaml    # LLM keys and model names
+│   ├── prompt_templates.yaml# Few-shot and system prompts
+│   └── logging_config.yaml  # Logging levels and formats
+│
+├── src/                     # Source code
+│   ├── llm/                 # Language model clients
+│   │   ├── __init__.py
+│   │   ├── base.py          # Abstract LLM base class
+│   │   ├── gpt_client.py    # OpenAI client implementation
+│   │   └── gemini_client.py # Gemini client (Google)
+│   │
+│   ├── prompt_engineering/  # Prompt formatting logic
+│   │   ├── __init__.py
+│   │   ├── templates.py
+│   │   ├── few_shot.py
+│   │   └── chainer.py
+│   │
+│   ├── utils/               # Common tools
+│   │   ├── __init__.py
+│   │   ├── rate_limiter.py
+│   │   ├── token_counter.py
+│   │   ├── cache.py
+│   │   └── logger.py
+│   │
+│   └── handlers/            # Resume analysis and DB writer
+│       ├── __init__.py
+│       └── error_handler.py
+│
+├── data/                    # Input/Output
+│   ├── cache/               # Intermediate cache
+│   ├── prompts/             # Prompt templates
+│   ├── outputs/             # Generated SQL dumps
+│   └── embeddings/          # Saved vectors (future use)
+│
+├── examples/                # Use case samples
+│   ├── basic_completion.py
+│   ├── chat_session.py
+│   └── chain_prompts.py
+│
+├── notebooks/               # Exploration notebooks
+│   ├── prompt_testing.ipynb
+│   ├── response_analysis.ipynb
+│   └── model_experimentation.ipynb
+│
+├── requirements.txt         # Pip dependencies
+├── setup.py                 # Optional package installer
+├── README.md                # This file
+└── Dockerfile               # Containerization setup
+
+```
+
+⚙️ Key Components
+
+- config/: Stores model settings, prompt formats, and logging setup.
+
+- src/llm/: Implements language model wrappers for Gemini and OpenAI.
+
+- src/prompt_engineering/: Centralizes reusable prompt strategies.
+
+- src/handlers/: Manages resume parsing, job execution, and DB insertion.
+
+- data/: Storage for raw text, structured outputs, and prompt variations.
+
+- notebooks/: For testing, tuning, and inspecting model behavior.
+
+🚀 Getting Started
+
+- Clone this repo
+
+- Run pip install -r requirements.txt
+
+- Add your .env file with:
+
+- OPENAI_API_KEY=your_key
+- GOOGLE_API_KEY=your_key
+
+- Add CVs to S3
+
+- Run main.py or launch the Streamlit UI

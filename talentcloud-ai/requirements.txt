@@ -9,3 +9,7 @@ boto3
 aws
 pymongo
 genai
+psycopg2
+pandas
+openai
+
