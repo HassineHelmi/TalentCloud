@@ -1,33 +1,70 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
+# Maven build output
+/target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Gradle/NB build output
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+nbbuild/
+dist/
+nbdist/
 
-### IntelliJ IDEA ###
-.idea
+# IDEs
+## IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+## Eclipse / Spring Tool Suite
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
 
-### VS Code ###
+## NetBeans
+/nbproject/private/
+/.nb-gradle/
+
+## VS Code
 .vscode/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Compiled Java files and build artifacts
+*.class
+*.jar
+*.war
+*.ear
+
+# Misc
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Test coverage
+coverage/
+jacoco.exec
+
+# Maven wrapper
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+
+# Helper files
+HELP.md

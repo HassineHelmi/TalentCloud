@@ -1,0 +1,57 @@
+# Node dependencies
+node_modules/
+
+# IDE and editor folders
+.idea/
+.vscode/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm/
+
+# Environment files
+.env
+.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+
+# Docker artifacts (optional)
+docker-compose.override.yml
+
+# Kubernetes local settings (optional)
+k8s/*.local.yaml
+
+# Ignore lock files if you use yarn instead of npm
+package-lock.json
+
+# Coverage reports
+coverage/
+
+# Misc
+*.tgz
+.cache/
+*.swp
+*.swo
+*.bak
+*.tmp
