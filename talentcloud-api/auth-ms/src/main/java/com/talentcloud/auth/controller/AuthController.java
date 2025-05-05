@@ -18,16 +18,16 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public Mono<ResponseEntity<String>> login(@RequestBody LoginRequest request) {
-        return authService.login(request)
-                .map(token -> ResponseEntity.ok(token));
-    }
-
-    @PostMapping("/register")
-    public Mono<ResponseEntity<String>> register(@RequestBody RegisterRequest request) {
-        return authService.register(request)
-                .map(msg -> ResponseEntity.ok(msg));
-    }
+//    @PostMapping("/login")
+//    public Mono<ResponseEntity<String>> login(@RequestBody LoginRequest request) {
+//        return authService.login(request)
+//                .map(token -> ResponseEntity.ok(token));
+//    }
+//
+//    @PostMapping("/register")
+//    public Mono<ResponseEntity<String>> register(@RequestBody RegisterRequest request) {
+//        return authService.register(request)
+//                .map(msg -> ResponseEntity.ok(msg));
+//    }
 }
 

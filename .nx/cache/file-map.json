@@ -1,0 +1,1262 @@
+{
+  "version": "6.0",
+  "nxVersion": "18.0.0",
+  "deps": {
+    "@auth0/angular-jwt": "^5.2.0"
+  },
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {},
+    "nonProjectFiles": [
+      {
+        "file": ".gitignore",
+        "hash": "17216678518313328548"
+      },
+      {
+        "file": ".nx/workspace-data/nx_files.nxt",
+        "hash": "232805641625676631"
+      },
+      {
+        "file": "README.md",
+        "hash": "16653559415271018173"
+      },
+      {
+        "file": "docker-compose.yml",
+        "hash": "4117581375982905620"
+      },
+      {
+        "file": "k8s/base/deployments/auth-ms-deployment.yaml",
+        "hash": "3878303691403641895"
+      },
+      {
+        "file": "k8s/base/deployments/profile-ms-deployment.yaml",
+        "hash": "15325881678595830908"
+      },
+      {
+        "file": "k8s/base/deployments/tls-secret.yaml",
+        "hash": "7734918577975269621"
+      },
+      {
+        "file": "k8s/base/istio/authz-policy-profile-ms.yaml",
+        "hash": "3172187386994626670"
+      },
+      {
+        "file": "k8s/base/istio/destinationrule-auth-ms.yaml",
+        "hash": "17387165988334305146"
+      },
+      {
+        "file": "k8s/base/istio/destinationrule-profile-ms.yaml",
+        "hash": "1033531557527281353"
+      },
+      {
+        "file": "k8s/base/istio/gateway.yaml",
+        "hash": "15886246443486192935"
+      },
+      {
+        "file": "k8s/base/istio/requestauth-profile-ms.yaml",
+        "hash": "12879485432884856420"
+      },
+      {
+        "file": "k8s/base/istio/virtualservice-auth-ms.yaml",
+        "hash": "5912638666229103788"
+      },
+      {
+        "file": "k8s/base/istio/virtualservice-profile-ms.yaml",
+        "hash": "10769644269375898733"
+      },
+      {
+        "file": "k8s/base/kustomization.yaml",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "k8s/overlays/dev/env-configmap.yaml",
+        "hash": "13695047327983543929"
+      },
+      {
+        "file": "k8s/overlays/dev/kustomization.yaml",
+        "hash": "2027195894728331477"
+      },
+      {
+        "file": "k8s/overlays/prod/env-configmap.yaml",
+        "hash": "13695047327983543929"
+      },
+      {
+        "file": "k8s/overlays/prod/kustomization.yaml",
+        "hash": "2027195894728331477"
+      },
+      {
+        "file": "k8s/overlays/qa/env-configmap.yaml",
+        "hash": "13695047327983543929"
+      },
+      {
+        "file": "k8s/overlays/qa/kustomization.yaml",
+        "hash": "2027195894728331477"
+      },
+      {
+        "file": "package.json",
+        "hash": "10377457975650299155"
+      },
+      {
+        "file": "talentcloud-ai/Dockerfile",
+        "hash": "15831800530654750308"
+      },
+      {
+        "file": "talentcloud-ai/README.md",
+        "hash": "12874028720186516663"
+      },
+      {
+        "file": "talentcloud-ai/config/__init__.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/config/logging_config.yml",
+        "hash": "16948690238133547814"
+      },
+      {
+        "file": "talentcloud-ai/config/model_config.yml",
+        "hash": "7603110177370697112"
+      },
+      {
+        "file": "talentcloud-ai/config/prompt_templates.yml",
+        "hash": "4184992496494646686"
+      },
+      {
+        "file": "talentcloud-ai/data/Resume.pdf",
+        "hash": "7603592423746013987"
+      },
+      {
+        "file": "talentcloud-ai/examples/cv_extraction.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/examples/job_matching.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/notebooks/prompt_testing.py",
+        "hash": "12862190602640339544"
+      },
+      {
+        "file": "talentcloud-ai/notebooks/resume_analyzer.ipynb",
+        "hash": "7640694898330238908"
+      },
+      {
+        "file": "talentcloud-ai/requirements.txt",
+        "hash": "10239745822527199020"
+      },
+      {
+        "file": "talentcloud-ai/setup.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/handlers/__init__.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/handlers/error_handler.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/llm/__init__.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/llm/app.py",
+        "hash": "9145099575660691344"
+      },
+      {
+        "file": "talentcloud-ai/src/llm/base.py",
+        "hash": "9145099575660691344"
+      },
+      {
+        "file": "talentcloud-ai/src/llm/gemini_client.py",
+        "hash": "17757966879458420786"
+      },
+      {
+        "file": "talentcloud-ai/src/llm/openai_client.py",
+        "hash": "9145099575660691344"
+      },
+      {
+        "file": "talentcloud-ai/src/llm/utils.py",
+        "hash": "9145099575660691344"
+      },
+      {
+        "file": "talentcloud-ai/src/prompts_engineering/__init__.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/prompts_engineering/templates.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/utils/__init__.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/utils/cache.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/utils/logger.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/utils/rate_limiter.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ai/src/utils/token_counter.py",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/.gitattributes",
+        "hash": "6003687593561338678"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/.gitignore",
+        "hash": "11978415849360030089"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/pom.xml",
+        "hash": "4892799070545593649"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/AuthApplication.java",
+        "hash": "7192952485448176678"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/config/RedisCacheConfig.java",
+        "hash": "13300642949922232777"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/config/SecurityConfig.java",
+        "hash": "13661984716681133719"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/config/WebConfig.java",
+        "hash": "13996558617290278040"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/controller/AuthController.java",
+        "hash": "1653574025025525687"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/dto/LoginRequest.java",
+        "hash": "1637902209388395083"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/dto/RegisterRequest.java",
+        "hash": "13397470636182857746"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/model/Role.java",
+        "hash": "17697757573717217869"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/model/User.java",
+        "hash": "7007751670260910847"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/repository/UserRepository.java",
+        "hash": "13518712696597182872"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/service/AuthService.java",
+        "hash": "3448500572962059636"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/java/com/talentcloud/auth/service/KeycloakService.java",
+        "hash": "12200276935878735144"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/resources/application-dev.properties",
+        "hash": "4068034837862685367"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/resources/application-local.properties",
+        "hash": "15074174572672565117"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/resources/application-prod.properties",
+        "hash": "355406304724602946"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/resources/application-qa.properties",
+        "hash": "355406304724602946"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/resources/application.properties",
+        "hash": "14859061759836865374"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/main/resources/db/changelog/changelog.xml",
+        "hash": "4670487665899466321"
+      },
+      {
+        "file": "talentcloud-api/auth-ms/src/test/java/com/talentcloud/auth/AuthApplicationTests.java",
+        "hash": "13455427308670038985"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/.gitattributes",
+        "hash": "6003687593561338678"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/.gitignore",
+        "hash": "11978415849360030089"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/pom.xml",
+        "hash": "6381617428650640984"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/InterviewMsApplication.java",
+        "hash": "3084425036715441941"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/config/SecurityConfig.java",
+        "hash": "10911886905203250014"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/config/WebClientConfig.java",
+        "hash": "10924142778643424487"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/controller/InterviewController.java",
+        "hash": "15119369957506393272"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/dto/UserProfileDto.java",
+        "hash": "17750222504218760700"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/kafka/KafkaConfig.java",
+        "hash": "18035480089739696133"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/kafka/event/InterviewCreatedEvent.java",
+        "hash": "18151061658769533332"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/kafka/listener/InterviewEventListener.java",
+        "hash": "3388738978988886442"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/kafka/producer/InterviewEventProducer.java",
+        "hash": "3251581461649957576"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/service/InterviewService.java",
+        "hash": "7013083131698098190"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/java/com/talentcloud/interview_ms/service/ProfileClient.java",
+        "hash": "13195073964222486552"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/resources/application-dev.properties",
+        "hash": "1262781715708733208"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/resources/application-local.properties",
+        "hash": "14251940211765599577"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/resources/application-prod.properties",
+        "hash": "14251940211765599577"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/resources/application-qa.properties",
+        "hash": "14251940211765599577"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/main/resources/application.properties",
+        "hash": "7508521981334319655"
+      },
+      {
+        "file": "talentcloud-api/interview-ms/src/test/java/com/talentcloud/interview_ms/InterviewMsApplicationTests.java",
+        "hash": "1507669422257853935"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/.gitattributes",
+        "hash": "6003687593561338678"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/.gitignore",
+        "hash": "11978415849360030089"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/Dockerfile",
+        "hash": "4419110877953867544"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/pom.xml",
+        "hash": "9723188526439869173"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/ProfileApplication.java",
+        "hash": "3719502281037760380"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/config/AwsConfig.java",
+        "hash": "8682910085293948720"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/config/RedisCacheConfig.java",
+        "hash": "1411788602117739045"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/config/SecurityConfig.java",
+        "hash": "10297037840859845068"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/config/SwaggerConfig.java",
+        "hash": "17295558842331940051"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/controller/CandidateController.java",
+        "hash": "2620017987561197603"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/controller/CertificationController.java",
+        "hash": "6131996142583260934"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/controller/ClientController.java",
+        "hash": "8043622613330838420"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/controller/EducationController.java",
+        "hash": "2392727273743753865"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/controller/ExperienceController.java",
+        "hash": "7758011068849420282"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/controller/ProfileController.java",
+        "hash": "17757694495093561032"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/controller/SkillsController.java",
+        "hash": "7941534933837372467"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/EducationRequest.java",
+        "hash": "12708203646912528020"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/ErrorResponse.java",
+        "hash": "6338106879392803151"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/UpdateCandidateDto.java",
+        "hash": "4127786672878573030"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/UpdateCertificationDto.java",
+        "hash": "8200913066873490702"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/UpdateClientDto.java",
+        "hash": "14381259340205540449"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/UpdateEducationDto.java",
+        "hash": "6394482275837919478"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/UpdateExperienceDto.java",
+        "hash": "6161615921185990794"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/UpdateSkillsDto.java",
+        "hash": "11618788212069730232"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/dto/UserProfileDto.java",
+        "hash": "8295375802484860777"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/exception/CandidateNotFoundException.java",
+        "hash": "13559991267519044618"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/exception/ClientNotFoundException.java",
+        "hash": "16535777909657415676"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/exception/GlobalExceptionHandler.java",
+        "hash": "5217467072386862861"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/iservice/IServiceCandidate.java",
+        "hash": "8129264846978286086"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/iservice/IServiceCertification.java",
+        "hash": "5923600810971360839"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/iservice/IServiceClient.java",
+        "hash": "13438229291325646843"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/iservice/IServiceEducation.java",
+        "hash": "10254890167727350896"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/iservice/IServiceExperience.java",
+        "hash": "3408462849470686311"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/iservice/IServiceSkills.java",
+        "hash": "8643518805301325336"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/lambda/LambdaInvokerService.java",
+        "hash": "6526394309035876438"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Admin.java",
+        "hash": "16227574729114772916"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Candidate.java",
+        "hash": "3015417080231396322"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Certification.java",
+        "hash": "1694198811425909009"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Client.java",
+        "hash": "6565125661179495097"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Education.java",
+        "hash": "1037936155394485610"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Experience.java",
+        "hash": "17405935261627089214"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Role.java",
+        "hash": "16220225534292184686"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/Skills.java",
+        "hash": "1480775157254052977"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/UserProfile.java",
+        "hash": "9679926397636759259"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/model/VisibilitySettings.java",
+        "hash": "15135703240688001624"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/repository/CandidateRepository.java",
+        "hash": "17543886719847478190"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/repository/CertificationRepository.java",
+        "hash": "8123574735501151730"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/repository/ClientRepository.java",
+        "hash": "14261268930994333291"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/repository/EducationRepository.java",
+        "hash": "10201977948601079674"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/repository/ExperienceRepository.java",
+        "hash": "11490750624612882844"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/repository/SkillsRepository.java",
+        "hash": "14035883242741109260"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/repository/UserProfileRepository.java",
+        "hash": "14294647812889900088"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/AdminService.java",
+        "hash": "328681485971566157"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/CandidateService.java",
+        "hash": "181991450388888844"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/CertificationService.java",
+        "hash": "12324409692909866652"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/ClientService.java",
+        "hash": "9461451269056762992"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/EducationService.java",
+        "hash": "15420131960918833756"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/ExperienceService.java",
+        "hash": "5729162435858080830"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/ProfileService.java",
+        "hash": "6059676007601551103"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/java/com/talentcloud/profile/service/SkillsService.java",
+        "hash": "1976976652267539938"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/resources/application-dev.properties",
+        "hash": "14776859305761372839"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/resources/application-local.properties",
+        "hash": "15258120829071084814"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/resources/application-prod.properties",
+        "hash": "14776859305761372839"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/resources/application-qa.properties",
+        "hash": "14776859305761372839"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/resources/application.properties",
+        "hash": "11398839933871407369"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/main/resources/sql/dump.sql",
+        "hash": "14455687604345386702"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/test/java/com/talentcloud/profile/ProfileApplicationTests.java",
+        "hash": "11180361315322190101"
+      },
+      {
+        "file": "talentcloud-api/profile-ms/src/test/java/com/talentcloud/profile/controller/EducationControllerTest.java",
+        "hash": "16263187801634951608"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/.tsbuildinfo",
+        "hash": "3119129573099767796"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_common.js",
+        "hash": "4120041471591319212"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_common.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_core.js",
+        "hash": "17697125340107612520"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_core.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_platform-browser.js",
+        "hash": "17779136077520573499"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_platform-browser.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_router.js",
+        "hash": "6469007544838836220"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/@angular_router.js.map",
+        "hash": "13090967120986206252"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/_metadata.json",
+        "hash": "18284768610787280466"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/chunk-7G6XEBUQ.js",
+        "hash": "13459369856811594657"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/chunk-7G6XEBUQ.js.map",
+        "hash": "17568120351804506234"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/chunk-J5FCIGAR.js",
+        "hash": "8250540599588997037"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/chunk-J5FCIGAR.js.map",
+        "hash": "12819253270961214149"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/chunk-ZNBUHOCE.js",
+        "hash": "15174788185787186605"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/chunk-ZNBUHOCE.js.map",
+        "hash": "2228134960402066408"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps/package.json",
+        "hash": "8630294688235076505"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_common.js",
+        "hash": "11102009068375153416"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_common.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_core.js",
+        "hash": "7958117094619373209"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_core.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_platform-browser.js",
+        "hash": "12390473741888828906"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_platform-browser.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_platform-server.js",
+        "hash": "6183974864192995831"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_platform-server.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_router.js",
+        "hash": "9990189637793720858"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_router.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_ssr.js",
+        "hash": "6592220312869330332"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_ssr.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_ssr_node.js",
+        "hash": "17974188897062150584"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/@angular_ssr_node.js.map",
+        "hash": "10370590394927630691"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/_metadata.json",
+        "hash": "10068467142957372946"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-HP7HF6Z3.js",
+        "hash": "8159328221324406434"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-HP7HF6Z3.js.map",
+        "hash": "7424551939891722473"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-IA5ECEAF.js",
+        "hash": "7617670804566938343"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-IA5ECEAF.js.map",
+        "hash": "17410887387091545143"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-KYHF4A6F.js",
+        "hash": "4265520591678399298"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-KYHF4A6F.js.map",
+        "hash": "11836628213885677527"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-O33LQQBT.js",
+        "hash": "8620645947655342648"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-O33LQQBT.js.map",
+        "hash": "3638793227366142876"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-VRSLPJZI.js",
+        "hash": "14123111965526733378"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-VRSLPJZI.js.map",
+        "hash": "3635984566761523654"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-YHCV7DAQ.js",
+        "hash": "7500294397791531092"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-YHCV7DAQ.js.map",
+        "hash": "9947606979680686569"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-ZRXQITWO.js",
+        "hash": "1071883156647497086"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/chunk-ZRXQITWO.js.map",
+        "hash": "17838584868942911927"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/express.js",
+        "hash": "13887256670768730708"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/express.js.map",
+        "hash": "16673069400039273529"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/package.json",
+        "hash": "8630294688235076505"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/xhr2-TXIMV6CV.js",
+        "hash": "4410784795647914957"
+      },
+      {
+        "file": "talentcloud-ui/.angular/cache/19.1.9/talentcloud-frontend/vite/deps_ssr/xhr2-TXIMV6CV.js.map",
+        "hash": "14876816803582843697"
+      },
+      {
+        "file": "talentcloud-ui/.editorconfig",
+        "hash": "5443105041930014821"
+      },
+      {
+        "file": "talentcloud-ui/.eslintrc.json",
+        "hash": "15388041757782744192"
+      },
+      {
+        "file": "talentcloud-ui/.github/workflows/deploy.yml",
+        "hash": "10774733819381434276"
+      },
+      {
+        "file": "talentcloud-ui/.gitignore",
+        "hash": "5385842660496849358"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/cypress-8161926102631362384.hash",
+        "hash": "12559734294136099019"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/dfafbf82-e2b0-43b1-9083-a953c0496d5c.db",
+        "hash": "11996645480735720572"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/eslint-2654242865465226088.hash",
+        "hash": "15192732676615090218"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/file-map.json",
+        "hash": "6765305260810965630"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/lockfile.hash",
+        "hash": "5399573113751996725"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/nx_files.nxt",
+        "hash": "156321693351318897"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/parsed-lock-file.json",
+        "hash": "5155849956413453223"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/project-graph.json",
+        "hash": "11262514029241862429"
+      },
+      {
+        "file": "talentcloud-ui/.nx/workspace-data/source-maps.json",
+        "hash": "1389868326933519382"
+      },
+      {
+        "file": "talentcloud-ui/.prettierignore",
+        "hash": "17733650430415207254"
+      },
+      {
+        "file": "talentcloud-ui/.prettierrc",
+        "hash": "16267754514737964994"
+      },
+      {
+        "file": "talentcloud-ui/README.md",
+        "hash": "7017494688791626817"
+      },
+      {
+        "file": "talentcloud-ui/apps/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/.browserslistrc",
+        "hash": "2519363244570020624"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/.eslintrc.json",
+        "hash": "5892044028537938681"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/jest.config.js",
+        "hash": "10592744875858463402"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/app/app.component.css",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/app/app.component.html",
+        "hash": "16498897523005705592"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/app/app.component.spec.ts",
+        "hash": "15128682143226923713"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/app/app.component.ts",
+        "hash": "16983084364026160130"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/app/app.module.ts",
+        "hash": "5531876505271329722"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/app/remote-entry/entry.component.ts",
+        "hash": "12259958970551054298"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/app/remote-entry/entry.module.ts",
+        "hash": "16183089871980384085"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/assets/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/assets/style.css",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/bootstrap.ts",
+        "hash": "14896519517424602606"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/environments/environment.prod.ts",
+        "hash": "10220522844224226756"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/environments/environment.ts",
+        "hash": "15801694716951284069"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/index.html",
+        "hash": "5407077435174669189"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/main.ts",
+        "hash": "14701344671644104227"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/polyfills.ts",
+        "hash": "7447999952350205954"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/styles.css",
+        "hash": "5195668842064076916"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/src/test-setup.ts",
+        "hash": "17711435995618823417"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/tsconfig.app.json",
+        "hash": "11424722619986022754"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/tsconfig.editor.json",
+        "hash": "6367495026318685054"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/tsconfig.json",
+        "hash": "840322115218349566"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/tsconfig.spec.json",
+        "hash": "2368708604775059221"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/webpack.config.js",
+        "hash": "15421872023103216254"
+      },
+      {
+        "file": "talentcloud-ui/apps/gallery/webpack.prod.config.js",
+        "hash": "15953509134499926520"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/.browserslistrc",
+        "hash": "2519363244570020624"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/.eslintrc.json",
+        "hash": "5892044028537938681"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/jest.config.js",
+        "hash": "106116403168423049"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/app/app.component.css",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/app/app.component.html",
+        "hash": "13811984015653535638"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/app/app.component.spec.ts",
+        "hash": "11412470609506595952"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/app/app.component.ts",
+        "hash": "11571056426306244299"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/app/app.module.ts",
+        "hash": "4480272749446531201"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/app/home/home.component.ts",
+        "hash": "14567678460267768850"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/assets/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/assets/style.css",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/bootstrap.ts",
+        "hash": "14896519517424602606"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/decl.d.ts",
+        "hash": "1695591930181773415"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/environments/environment.prod.ts",
+        "hash": "10220522844224226756"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/environments/environment.ts",
+        "hash": "15801694716951284069"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/index.html",
+        "hash": "16211524891959288406"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/main.ts",
+        "hash": "14701344671644104227"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/polyfills.ts",
+        "hash": "7447999952350205954"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/styles.css",
+        "hash": "5195668842064076916"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/src/test-setup.ts",
+        "hash": "17711435995618823417"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/tsconfig.app.json",
+        "hash": "11424722619986022754"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/tsconfig.editor.json",
+        "hash": "6367495026318685054"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/tsconfig.json",
+        "hash": "840322115218349566"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/tsconfig.spec.json",
+        "hash": "2368708604775059221"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/webpack.config.js",
+        "hash": "14778023433587666198"
+      },
+      {
+        "file": "talentcloud-ui/apps/shell/webpack.prod.config.js",
+        "hash": "15953509134499926520"
+      },
+      {
+        "file": "talentcloud-ui/jest.config.js",
+        "hash": "8280827210074712746"
+      },
+      {
+        "file": "talentcloud-ui/jest.preset.js",
+        "hash": "5137147997102054031"
+      },
+      {
+        "file": "talentcloud-ui/libs/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/.eslintrc.json",
+        "hash": "3308955286813677441"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/README.md",
+        "hash": "8800957593852121478"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/jest.config.js",
+        "hash": "16728768541720200616"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/index.ts",
+        "hash": "9688689543601447986"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/api/gallery-api.service.spec.ts",
+        "hash": "10419587349180449752"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/api/gallery-api.service.ts",
+        "hash": "10968105237113087583"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/gallery-store.module.ts",
+        "hash": "5645456252212130026"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.actions.ts",
+        "hash": "16315514755042295655"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.effects.spec.ts",
+        "hash": "8485608047800364186"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.effects.ts",
+        "hash": "14958817635232014610"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.facade.spec.ts",
+        "hash": "3341227651816514289"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.facade.ts",
+        "hash": "8746289622792161702"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.models.ts",
+        "hash": "1110261821240583926"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.reducer.spec.ts",
+        "hash": "17598220568540398909"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.reducer.ts",
+        "hash": "12105174439275188834"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.selectors.spec.ts",
+        "hash": "16172391456165086101"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/gallery-store/state/gallery.selectors.ts",
+        "hash": "10838276823619683532"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/lib/shared-data-store.module.ts",
+        "hash": "4758300767833436887"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/src/test-setup.ts",
+        "hash": "17711435995618823417"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/tsconfig.json",
+        "hash": "5108760381659585784"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/tsconfig.lib.json",
+        "hash": "2097938359660548459"
+      },
+      {
+        "file": "talentcloud-ui/libs/shared/data-store/tsconfig.spec.json",
+        "hash": "8142831903701906797"
+      },
+      {
+        "file": "talentcloud-ui/nx.json",
+        "hash": "15221445954187199592"
+      },
+      {
+        "file": "talentcloud-ui/package.json",
+        "hash": "13229030372458700839"
+      },
+      {
+        "file": "talentcloud-ui/src/libs/styles/src/index.ts",
+        "hash": "14428353282588746736"
+      },
+      {
+        "file": "talentcloud-ui/tools/generators/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "talentcloud-ui/tools/tsconfig.tools.json",
+        "hash": "16088922570277978783"
+      },
+      {
+        "file": "talentcloud-ui/tsconfig.base.json",
+        "hash": "10974137375809846236"
+      },
+      {
+        "file": "talentcloud-ui/workspace.json",
+        "hash": "1828847855613777957"
+      }
+    ]
+  }
+}
