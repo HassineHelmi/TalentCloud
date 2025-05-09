@@ -49,7 +49,7 @@ public class AuthService {
 
                 MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
                 body.add("grant_type", "password");
-                body.add("client_id", "your-client-id"); // Make sure this client ID is correct and configured in Keycloak
+                body.add("client_id", "public-client"); // Make sure this client ID is correct and configured in Keycloak
                 body.add("username", request.getUsername());
                 body.add("password", request.getPassword());
 

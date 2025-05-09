@@ -12,8 +12,8 @@ import java.util.Map;
 public class KeycloakService {
     private final RestTemplate restTemplate;
     private final String keycloakTokenUrl = "http://localhost:8080/realms/talentcloud/protocol/openid-connect/token";
-    private final String clientId = "api-gateway";
-    private final String clientSecret = "JRkwYhOd646mf3a2SzzyHDu83A7T97e2";
+    private final String clientId = "public-client";
+    private final String clientSecret = "mLEpCbgOzDmSLn7UM4IaTCDFAAMMIRbk";
     private final String realmAdminUrl = "http://localhost:8080/admin/realms/talentcloud/users";
     private final String realmRolesUrl = "http://localhost:8080/admin/realms/talentcloud/roles";
 

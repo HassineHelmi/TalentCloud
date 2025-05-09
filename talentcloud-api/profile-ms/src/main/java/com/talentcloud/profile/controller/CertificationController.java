@@ -12,7 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/certifications")
+@RequestMapping("/api/v1/certifications")
 public class CertificationController {
 
     private final IServiceCertification certificationService;
