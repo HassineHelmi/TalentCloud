@@ -12,8 +12,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
@@ -29,23 +27,25 @@ public class SecurityConfig {
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api/auth/register").permitAll()
                         .pathMatchers("/api/auth/login").permitAll()
-//                        .pathMatchers("/api/auth/admin/**").hasRole(Role.ROLE_ADMIN.getRole())
-//                        .pathMatchers("/api/auth/client/**").hasRole(Role.ROLE_CLIENT.getRole())
-//                        .pathMatchers("/api/auth/candidate/**").hasRole(Role.ROLE_CANDIDATE.getRole())
-                        .anyExchange().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
+                        .anyExchange().permitAll() // Allow all endpoints for now
+                );
+        // Completely remove OAuth2 resource server for now
+        // .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
 
         return http.build();
     }
 
+    // Comment out these beans temporarily
+    /*
     @Bean
     public Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
     }
+
     @Bean
-    public ReactiveJwtDecoder reactiveJwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") String issuerUri) {
-        return NimbusReactiveJwtDecoder.withJwkSetUri(issuerUri).build();
+    public ReactiveJwtDecoder reactiveJwtDecoder() {
+        return NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }
+    */
 }

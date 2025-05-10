@@ -1,58 +1,52 @@
 package com.talentcloud.auth.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class KeycloakService {
-    private final RestTemplate restTemplate;
-    private final String keycloakTokenUrl = "http://localhost:8080/realms/talentcloud/protocol/openid-connect/token";
-    private final String clientId = "public-client";
-    private final String clientSecret = "mLEpCbgOzDmSLn7UM4IaTCDFAAMMIRbk";
-    private final String realmAdminUrl = "http://localhost:8080/admin/realms/talentcloud/users";
-    private final String realmRolesUrl = "http://localhost:8080/admin/realms/talentcloud/roles";
 
-    public KeycloakService(RestTemplate restTemplate) {
+    private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
+
+    // Update with the same port as in AuthService
+    private final String KEYCLOAK_BASE_URL = "http://localhost:38857";
+    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/master/protocol/openid-connect/token";
+
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+
+    public KeycloakService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public String getAdminToken() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("client_id", clientId);
-        body.add("client_secret", clientSecret);
-        body.add("grant_type", "client_credentials");
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("grant_type", "password");
+            body.add("client_id", "admin-cli");
+            body.add("username", "user");  // Your Keycloak admin username
+            body.add("password", "gMUGWnFNSp");  // Your Keycloak admin password
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(keycloakTokenUrl, request, Map.class);
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
-        return response.getBody().get("access_token").toString();
-    }
+            ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_TOKEN_URL, request, String.class);
 
-    public ResponseEntity<String> fetchUsersFromKeycloak() {
-        String adminToken = getAdminToken();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + adminToken);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        return restTemplate.exchange(realmAdminUrl, HttpMethod.GET, entity, String.class);
-    }
-
-    public ResponseEntity<String> fetchRolesFromKeycloak() {
-        String adminToken = getAdminToken();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + adminToken);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        return restTemplate.exchange(realmRolesUrl, HttpMethod.GET, entity, String.class);
+            JsonNode tokenJson = objectMapper.readTree(response.getBody());
+            return tokenJson.get("access_token").asText();
+        } catch (Exception e) {
+            logger.error("Failed to get admin token from Keycloak", e);
+            throw new RuntimeException("Failed to get admin token", e);
+        }
     }
 }

@@ -7,11 +7,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
-@Repository
-@EnableR2dbcRepositories
-public interface UserRepository extends R2dbcRepository<User, String> {
-    boolean existsByUsername(String username);
-    boolean existsByEmail(String email);
-    User findByUsername(String username);
-}
+import java.util.UUID;
 
+@Repository
+public interface UserRepository extends ReactiveCrudRepository<User, UUID> {
+    Mono<User> findByUsername(String username);
+    Mono<User> findByEmail(String email);
+
+    // Add these reactive existence check methods
+    Mono<Boolean> existsByUsername(String username);
+    Mono<Boolean> existsByEmail(String email);
+}

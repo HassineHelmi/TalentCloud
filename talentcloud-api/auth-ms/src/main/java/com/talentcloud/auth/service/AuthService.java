@@ -1,5 +1,6 @@
 package com.talentcloud.auth.service;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.talentcloud.auth.dto.LoginRequest;
@@ -14,7 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-import reactor.core.publisher.Mono; // Import Mono
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 
@@ -23,8 +24,12 @@ public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-    private final String KEYCLOAK_ADMIN_URL = "http://localhost:8080/admin/realms/talentcloud/users";
-    private final String KEYCLOAK_ROLES_URL = "http://localhost:8080/admin/realms/talentcloud/roles";
+    // Update these URLs with your current Keycloak port from port forwarding
+    private final String KEYCLOAK_BASE_URL = "http://localhost:38857";
+    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/talentcloud/protocol/openid-connect/token";
+    private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/talentcloud/users";
+    private final String KEYCLOAK_ROLES_URL = KEYCLOAK_BASE_URL + "/admin/realms/talentcloud/roles";
+
     private final KeycloakService keycloakService;
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
@@ -38,9 +43,8 @@ public class AuthService {
         this.objectMapper = objectMapper;
     }
 
-    // Modified to return Mono<ResponseEntity<String>>
     public Mono<ResponseEntity<String>> login(LoginRequest request) {
-        return Mono.fromCallable(() -> { // Wrap blocking code
+        return Mono.fromCallable(() -> {
             try {
                 logger.info("Attempting login for user: {}", request.getUsername());
 
@@ -49,19 +53,25 @@ public class AuthService {
 
                 MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
                 body.add("grant_type", "password");
-                body.add("client_id", "public-client"); // Make sure this client ID is correct and configured in Keycloak
+                body.add("client_id", "public-client");
+
+                // Add client_secret if your client is confidential (likely needed)
+                body.add("client_secret", "DOXtRQU8K6CmLzFqsKZDP7dLWgGc7cQa");
+
                 body.add("username", request.getUsername());
                 body.add("password", request.getPassword());
 
+                // Add scope parameter
+                body.add("scope", "openid");
+
                 HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
 
-                String tokenUrl = "http://localhost:8080/realms/talentcloud/protocol/openid-connect/token";
+                // Debug the request
+                logger.debug("Token request URL: {}", KEYCLOAK_TOKEN_URL);
+                logger.debug("Token request body: {}", body);
 
-                ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, entity, String.class);
-
-                // ResponseEntity.ok() itself will handle 2xx.
-                // For non-2xx, RestTemplate throws an exception (e.g., HttpClientErrorException, HttpServerErrorException)
-                // which will be caught by the outer catch block.
+                // Use the updated token URL
+                ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_TOKEN_URL, entity, String.class);
 
                 JsonNode tokenJson = objectMapper.readTree(response.getBody());
                 String accessToken = tokenJson.get("access_token").asText();
@@ -69,134 +79,146 @@ public class AuthService {
                 logger.info("Login successful for user: {}", request.getUsername());
                 return ResponseEntity.ok(accessToken);
 
-            } catch (HttpStatusCodeException e) { // Catch specific RestTemplate exceptions
+            } catch (HttpStatusCodeException e) {
                 logger.error("Login failed for user {}: {} - {}", request.getUsername(), e.getStatusCode(), e.getResponseBodyAsString(), e);
                 return ResponseEntity.status(e.getStatusCode())
                         .body("Login failed: " + e.getResponseBodyAsString());
             } catch (Exception e) {
-                logger.error("Login failed for user {}:", request.getUsername(), e);
+                logger.error("Login failed for user {}: {}", request.getUsername(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Login failed due to an internal error: " + e.getMessage());
             }
         });
     }
-
-    // Modified to return Mono<ResponseEntity<String>>
+    // The register method remains the same, but we'll use updated URLs
     public Mono<ResponseEntity<String>> register(RegisterRequest request) {
-        return Mono.fromCallable(() -> { // Wrap blocking code
-            try {
-                logger.info("Starting user registration process for username: {}", request.getUsername());
+        logger.info("Starting user registration process for username: {}", request.getUsername());
 
-                // Check if user already exists in PostgreSQL (this is still blocking)
-                // For a fully reactive approach with R2DBC, this check would also be reactive.
-                // However, for now, we keep it within fromCallable.
-                if (userRepository.existsByUsername(request.getUsername()) || userRepository.existsByEmail(request.getEmail())) {
-                    logger.warn("User already exists in database: {}", request.getUsername());
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists!");
-                }
+        return userRepository.existsByUsername(request.getUsername())
+                .flatMap(usernameExists -> {
+                    if (usernameExists) {
+                        logger.warn("Username already exists in database: {}", request.getUsername());
+                        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists!"));
+                    }
+                    return userRepository.existsByEmail(request.getEmail())
+                            .flatMap(emailExists -> {
+                                if (emailExists) {
+                                    logger.warn("Email already exists in database: {}", request.getEmail());
+                                    return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists!"));
+                                }
 
-                // Get Keycloak Admin Token
-                String adminToken = keycloakService.getAdminToken(); // This is also blocking
-                logger.info("Obtained admin token from Keycloak");
+                                return Mono.fromCallable(() -> {
+                                    try {
+                                        // Get Keycloak Admin Token
+                                        String adminToken = keycloakService.getAdminToken();
+                                        logger.info("Obtained admin token from Keycloak");
 
-                // Set headers
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                headers.set("Authorization", "Bearer " + adminToken);
+                                        // Set headers
+                                        HttpHeaders headers = new HttpHeaders();
+                                        headers.setContentType(MediaType.APPLICATION_JSON);
+                                        headers.set("Authorization", "Bearer " + adminToken);
 
-                // Create Keycloak user payload
-                Map<String, Object> keycloakUser = new HashMap<>();
-                keycloakUser.put("username", request.getUsername());
-                keycloakUser.put("email", request.getEmail());
-                keycloakUser.put("enabled", true);
+                                        // Create Keycloak user payload with firstName and lastName
+                                        Map<String, Object> keycloakUser = new HashMap<>();
+                                        keycloakUser.put("username", request.getUsername());
+                                        keycloakUser.put("email", request.getEmail());
+                                        keycloakUser.put("enabled", true);
+                                        keycloakUser.put("firstName", request.getFirstName());  // Add firstName directly
+                                        keycloakUser.put("lastName", request.getLastName());    // Add lastName directly
 
-                Map<String, Object> credentials = new HashMap<>();
-                credentials.put("type", "password");
-                credentials.put("value", request.getPassword());
-                credentials.put("temporary", false);
-                keycloakUser.put("credentials", Collections.singletonList(credentials));
+                                        // Set credentials
+                                        Map<String, Object> credentials = new HashMap<>();
+                                        credentials.put("type", "password");
+                                        credentials.put("value", request.getPassword());
+                                        credentials.put("temporary", false);
+                                        keycloakUser.put("credentials", Collections.singletonList(credentials));
 
-                HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(keycloakUser, headers);
-                ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_ADMIN_URL, requestEntity, String.class);
+                                        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(keycloakUser, headers);
+                                        ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_ADMIN_URL, requestEntity, String.class);
 
-                // RestTemplate throws an exception for non-2xx responses, handled by HttpStatusCodeException catch.
-                logger.info("User created successfully in Keycloak");
+                                        logger.info("User created successfully in Keycloak");
 
-                ResponseEntity<String> usersResponse = restTemplate.exchange(
-                        KEYCLOAK_ADMIN_URL + "?username=" + request.getUsername(),
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        String.class
-                );
-                logger.info("User retrieval response from Keycloak: {}", usersResponse.getStatusCode());
+                                        ResponseEntity<String> usersResponse = restTemplate.exchange(
+                                                KEYCLOAK_ADMIN_URL + "?username=" + request.getUsername(),
+                                                HttpMethod.GET,
+                                                new HttpEntity<>(headers),
+                                                String.class
+                                        );
+                                        logger.info("User retrieval response from Keycloak: {}", usersResponse.getStatusCode());
 
+                                        String userId = extractUserIdFromResponse(usersResponse.getBody());
+                                        if (userId == null) {
+                                            logger.error("Failed to extract user ID from Keycloak response");
+                                            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                                    .body("Failed to extract user ID after creation in Keycloak");
+                                        }
+                                        logger.info("Retrieved user ID from Keycloak: {}", userId);
 
-                String userId = extractUserIdFromResponse(usersResponse.getBody());
-                if (userId == null) {
-                    logger.error("Failed to extract user ID from Keycloak response");
-                    // Potentially roll back Keycloak user creation or log for manual intervention
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to extract user ID after creation in Keycloak");
-                }
-                logger.info("Retrieved user ID from Keycloak: {}", userId);
+                                        ResponseEntity<String> rolesResponse = restTemplate.exchange(
+                                                KEYCLOAK_ROLES_URL,
+                                                HttpMethod.GET,
+                                                new HttpEntity<>(headers),
+                                                String.class
+                                        );
 
-                ResponseEntity<String> rolesResponse = restTemplate.exchange(
-                        KEYCLOAK_ROLES_URL,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        String.class
-                );
+                                        String roleId = findRoleId(rolesResponse.getBody(), request.getRole());
+                                        if (roleId == null) {
+                                            logger.error("Requested role not found: {}", request.getRole());
+                                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                                    .body("Requested role not found: " + request.getRole());
+                                        }
+                                        logger.info("Found role ID for role {}: {}", request.getRole(), roleId);
 
-                String roleId = findRoleId(rolesResponse.getBody(), request.getRole());
-                if (roleId == null) {
-                    logger.error("Requested role not found: {}", request.getRole());
-                    // Potentially roll back Keycloak user creation
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requested role not found: " + request.getRole());
-                }
-                logger.info("Found role ID for role {}: {}", request.getRole(), roleId);
+                                        String roleAssignmentUrl = KEYCLOAK_ADMIN_URL + "/" + userId + "/role-mappings/realm";
+                                        List<Map<String, Object>> rolesList = new ArrayList<>();
+                                        Map<String, Object> roleMap = new HashMap<>();
+                                        roleMap.put("id", roleId);
+                                        roleMap.put("name", request.getRole());
+                                        rolesList.add(roleMap);
 
-                String roleAssignmentUrl = KEYCLOAK_ADMIN_URL + "/" + userId + "/role-mappings/realm";
-                List<Map<String, Object>> rolesList = new ArrayList<>();
-                Map<String, Object> roleMap = new HashMap<>();
-                roleMap.put("id", roleId);
-                roleMap.put("name", request.getRole()); // Ensure this matches the role name in Keycloak
-                rolesList.add(roleMap);
+                                        HttpEntity<List<Map<String, Object>>> roleRequest = new HttpEntity<>(rolesList, headers);
+                                        ResponseEntity<String> roleResponse = restTemplate.postForEntity(
+                                                roleAssignmentUrl, roleRequest, String.class);
 
-                HttpEntity<List<Map<String, Object>>> roleRequest = new HttpEntity<>(rolesList, headers);
-                ResponseEntity<String> roleResponse = restTemplate.postForEntity(roleAssignmentUrl, roleRequest, String.class);
+                                        logger.info("Role assignment response: {}", roleResponse.getStatusCode());
+                                        logger.info("Role assigned successfully to user");
 
-                logger.info("Role assignment response: {}", roleResponse.getStatusCode());
-                logger.info("Role assigned successfully to user");
+                                        // Create and save user in our database
+                                        User user = new User();
+                                        user.setKeycloakId(userId);
+                                        user.setUsername(request.getUsername());
+                                        user.setEmail(request.getEmail());
+                                        user.setRole(request.getRole().toUpperCase());
+                                        // You might want to also save firstName and lastName in your database
+                                        // user.setFirstName(request.getFirstName());
+                                        // user.setLastName(request.getLastName());
 
-                User user = new User();
-                user.setKeycloakId(userId);
-                user.setUsername(request.getUsername());
-                user.setEmail(request.getEmail());
-                user.setRole(request.getRole().toUpperCase()); // Consistent casing with your Role enum
-                userRepository.save(user).subscribe( // Handle the Mono returned by R2DBC save
-                        savedUser -> logger.info("User saved successfully in PostgreSQL database: {}", savedUser.getUsername()),
-                        error -> logger.error("Error saving user to PostgreSQL: ", error)
-                );
+                                        userRepository.save(user).subscribe(
+                                                savedUser -> logger.info("User saved successfully in PostgreSQL database: {}",
+                                                        savedUser.getUsername()),
+                                                error -> logger.error("Error saving user to PostgreSQL: ", error)
+                                        );
 
+                                        return ResponseEntity.ok("User registered and role assigned successfully!");
 
-                return ResponseEntity.ok("User registered and role assigned successfully!");
-
-            } catch (HttpStatusCodeException e) {
-                logger.error("Error during user registration process for {}: {} - {}", request.getUsername(), e.getStatusCode(), e.getResponseBodyAsString(), e);
-                // Consider more specific error messages or rollback mechanisms
-                return ResponseEntity.status(e.getStatusCode())
-                        .body("Registration failed: " + e.getResponseBodyAsString());
-            } catch (Exception e) {
-                logger.error("Error during user registration process for {}:", request.getUsername(), e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Registration failed due to an internal error: " + e.getMessage());
-            }
-        });
+                                    } catch (HttpStatusCodeException e) {
+                                        logger.error("Error during user registration process for {}: {} - {}",
+                                                request.getUsername(), e.getStatusCode(), e.getResponseBodyAsString(), e);
+                                        return ResponseEntity.status(e.getStatusCode())
+                                                .body("Registration failed: " + e.getResponseBodyAsString());
+                                    } catch (Exception e) {
+                                        logger.error("Error during user registration process for {}:", request.getUsername(), e);
+                                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                                .body("Registration failed due to an internal error: " + e.getMessage());
+                                    }
+                                });
+                            });
+                });
     }
-
     private String extractUserIdFromResponse(String responseBody) {
         try {
             JsonNode userArray = objectMapper.readTree(responseBody);
-            if (userArray.isArray() && !userArray.isEmpty()) { // Check if array is not empty
+            if (userArray.isArray() && !userArray.isEmpty()) {
                 return userArray.get(0).get("id").asText();
             } else {
                 logger.warn("User array is empty or not an array in Keycloak response: {}", responseBody);
@@ -212,7 +234,7 @@ public class AuthService {
             JsonNode rolesArray = objectMapper.readTree(rolesResponseBody);
             if (rolesArray.isArray()) {
                 for (JsonNode role : rolesArray) {
-                    if (role.has("name") && role.get("name").asText().equalsIgnoreCase(roleName)) { // Case-insensitive match might be safer
+                    if (role.has("name") && role.get("name").asText().equalsIgnoreCase(roleName)) {
                         return role.get("id").asText();
                     }
                 }
@@ -225,6 +247,8 @@ public class AuthService {
         return null;
     }
 }
+
+
 
 
 
