@@ -16,7 +16,7 @@ public class KeycloakService {
     private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
 
     // Update with the same port as in AuthService
-    private final String KEYCLOAK_BASE_URL = "http://localhost:38857";
+    private final String KEYCLOAK_BASE_URL = "http://172.20.52.160:30080";
     private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/master/protocol/openid-connect/token";
 
     private final RestTemplate restTemplate;
@@ -35,8 +35,8 @@ public class KeycloakService {
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
             body.add("grant_type", "password");
             body.add("client_id", "admin-cli");
-            body.add("username", "user");  // Your Keycloak admin username
-            body.add("password", "gMUGWnFNSp");  // Your Keycloak admin password
+            body.add("username", "admin");  // Your Keycloak admin username
+            body.add("password", "admin");  // Your Keycloak admin password
 
             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 

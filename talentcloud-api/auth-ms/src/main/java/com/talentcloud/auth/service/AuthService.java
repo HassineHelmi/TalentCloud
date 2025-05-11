@@ -25,10 +25,10 @@ public class AuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     // Update these URLs with your current Keycloak port from port forwarding
-    private final String KEYCLOAK_BASE_URL = "http://localhost:38857";
-    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/talentcloud/protocol/openid-connect/token";
-    private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/talentcloud/users";
-    private final String KEYCLOAK_ROLES_URL = KEYCLOAK_BASE_URL + "/admin/realms/talentcloud/roles";
+    private final String KEYCLOAK_BASE_URL = "http://172.20.52.160:30080";
+    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/talent/protocol/openid-connect/token";
+    private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/talent/users";
+    private final String KEYCLOAK_ROLES_URL = KEYCLOAK_BASE_URL + "/admin/realms/talent/roles";
 
     private final KeycloakService keycloakService;
     private final RestTemplate restTemplate;
@@ -56,7 +56,7 @@ public class AuthService {
                 body.add("client_id", "public-client");
 
                 // Add client_secret if your client is confidential (likely needed)
-                body.add("client_secret", "DOXtRQU8K6CmLzFqsKZDP7dLWgGc7cQa");
+                body.add("client_secret", "mLEpCbgOzDmSLn7UM4IaTCDFAAMMIRbk");
 
                 body.add("username", request.getUsername());
                 body.add("password", request.getPassword());
