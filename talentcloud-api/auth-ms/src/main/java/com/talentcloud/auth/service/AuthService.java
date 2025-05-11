@@ -23,12 +23,15 @@ import java.util.*;
 public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+ 
+    @Value("${KEYCLOAK_URL}")
+    private String KEYCLOAK_BASE_URL;
+    @Value("${KEYCLOAK_REALM}")
+    private String KEYCLOAK_REALM;  
 
-    // Update these URLs with your current Keycloak port from port forwarding
-    private final String KEYCLOAK_BASE_URL = "http://172.20.52.160:30080";
-    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/talent/protocol/openid-connect/token";
-    private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/talent/users";
-    private final String KEYCLOAK_ROLES_URL = KEYCLOAK_BASE_URL + "/admin/realms/talent/roles";
+    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
+    private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/" + KEYCLOAK_REALM + "/users";
+    private final String KEYCLOAK_ROLES_URL = KEYCLOAK_BASE_URL + "/admin/realms/" + KEYCLOAK_REALM + "/roles";
 
     private final KeycloakService keycloakService;
     private final RestTemplate restTemplate;
