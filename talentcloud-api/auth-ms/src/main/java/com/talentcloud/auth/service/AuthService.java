@@ -29,6 +29,8 @@ public class AuthService {
     private String KEYCLOAK_BASE_URL;
     @Value("${KEYCLOAK_REALM}")
     private String KEYCLOAK_REALM;  
+    @Value("${keycloak.client-secret}")
+    private String clientSecret;
 
     private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
     private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/" + KEYCLOAK_REALM + "/users";
