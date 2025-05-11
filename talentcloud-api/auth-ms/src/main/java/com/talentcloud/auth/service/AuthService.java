@@ -54,7 +54,7 @@ public class AuthService {
                 MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
                 body.add("grant_type", "password");
                 body.add("client_id", "public-client");
-                body.add("client_secret", "mLEpCbgOzDmSLn7UM4IaTCDFAAMMIRbk");
+                body.add("client_secret", clientSecret);
                 body.add("username", request.getUsername());
                 body.add("password", request.getPassword());
                 body.add("scope", "openid");
