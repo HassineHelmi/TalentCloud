@@ -33,9 +33,7 @@ public class AuthService {
     private String clientSecret;
 
     private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
-    logger.debug("Constructed Keycloak Token URL: {}", KEYCLOAK_TOKEN_URL);
     private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/" + KEYCLOAK_REALM + "/users";
-    logger.debug("Constructed Keycloak Token URL: {}", KEYCLOAK_ADMIN_URL);
     private final String KEYCLOAK_ROLES_URL = KEYCLOAK_BASE_URL + "/admin/realms/" + KEYCLOAK_REALM + "/roles";
 
     private final KeycloakService keycloakService;
