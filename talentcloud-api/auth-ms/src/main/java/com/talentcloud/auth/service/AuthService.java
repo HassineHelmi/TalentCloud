@@ -25,16 +25,18 @@ public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
  
-    @Value("${KEYCLOAK_URL}")
-    private String KEYCLOAK_BASE_URL;
-    @Value("${KEYCLOAK_REALM}")
-    private String KEYCLOAK_REALM;  
+    //@Value("${KEYCLOAK_URL}")
+    //private String KEYCLOAK_BASE_URL;
+    //@Value("${KEYCLOAK_REALM}")
+    //private String KEYCLOAK_REALM;  
     @Value("${keycloak.client-secret}")
     private String clientSecret;
 
-    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
-    private final String KEYCLOAK_ADMIN_URL = KEYCLOAK_BASE_URL + "/admin/realms/" + KEYCLOAK_REALM + "/users";
-    private final String KEYCLOAK_ROLES_URL = KEYCLOAK_BASE_URL + "/admin/realms/" + KEYCLOAK_REALM + "/roles";
+    private final String KEYCLOAK_BASE_URL = "https://keycloak.talentcloud-dev.com";
+
+    private final String KEYCLOAK_TOKEN_URL = "https://keycloak.talentcloud-dev.com/realms/talent/protocol/openid-connect/token";
+    private final String KEYCLOAK_ADMIN_URL = "https://keycloak.talentcloud-dev.com/admin/realms/talent/users";
+    private final String KEYCLOAK_ROLES_URL = "https://keycloak.talentcloud-dev.com/admin/realms/talent/roles";
 
     private final KeycloakService keycloakService;
     private final RestTemplate restTemplate;
