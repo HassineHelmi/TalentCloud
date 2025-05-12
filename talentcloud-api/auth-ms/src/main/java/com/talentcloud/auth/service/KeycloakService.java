@@ -16,12 +16,14 @@ public class KeycloakService {
 
     private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
     
-    @Value("${KEYCLOAK_URL}")
-    private String KEYCLOAK_BASE_URL;
-    @Value("${KEYCLOAK_REALM}")
-    private String KEYCLOAK_REALM;  
-    
-    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
+  //  @Value("${KEYCLOAK_URL}")
+   // private String KEYCLOAK_BASE_URL;
+   // @Value("${KEYCLOAK_REALM}")
+    //private String KEYCLOAK_REALM;  
+
+    private final String KEYCLOAK_BASE_URL = "https://keycloak.talentcloud-dev.com";
+    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/master/protocol/openid-connect/token";
+    //private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
