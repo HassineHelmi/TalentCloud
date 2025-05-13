@@ -85,11 +85,7 @@ public class AuthService {
 
             ResponseEntity<String> response = restTemplate.postForEntity(getTokenUrl(), entity, String.class);
 
-            JsonNode tokenJson = objectMapper.readTree(response.getBody());
-            String accessToken = tokenJson.get("access_token").asText();
-
-            logger.info("Login successful for user: {}", request.getUsername());
-            return ResponseEntity.ok(accessToken);
+            return ResponseEntity.ok(response.getBody());
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
