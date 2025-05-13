@@ -16,14 +16,16 @@ public class KeycloakService {
 
     private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
     
-  //  @Value("${KEYCLOAK_URL}")
-   // private String KEYCLOAK_BASE_URL;
-   // @Value("${KEYCLOAK_REALM}")
-    //private String KEYCLOAK_REALM;  
+    @Value("${KEYCLOAK_URL}")
+    private String keycloakBaseUrl;
+    @Value("${KEYCLOAK_ADMIN_USERNAME}")
+    private String adminUsername;
+    @Value("${KEYCLOAK_ADMIN_PASSWORD}")
+    private String adminPassword;
 
-    private final String KEYCLOAK_BASE_URL = "https://keycloak.talentcloud-dev.com";
-    private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/master/protocol/openid-connect/token";
-    //private final String KEYCLOAK_TOKEN_URL = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
+    private String getAdminTokenUrl() {
+        return keycloakBaseUrl + "/realms/master/protocol/openid-connect/token";
+    }
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -41,12 +43,12 @@ public class KeycloakService {
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
             body.add("grant_type", "password");
             body.add("client_id", "admin-cli");
-            body.add("username", "admin");  // Your Keycloak admin username
-            body.add("password", "admin");  // Your Keycloak admin password
+            body.add("username", adminUsername);
+            body.add("password", adminPassword);
 
             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
-            ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_TOKEN_URL, request, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(getAdminTokenUrl(), request, String.class);
 
             JsonNode tokenJson = objectMapper.readTree(response.getBody());
             return tokenJson.get("access_token").asText();
