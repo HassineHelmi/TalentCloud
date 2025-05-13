@@ -3,12 +3,11 @@ package com.talentcloud.auth.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpStatusCodeException;
-
+import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,13 +15,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleValidationErrors(
-            MethodArgumentNotValidException ex,
+    @ExceptionHandler(WebExchangeBindException.class)
+    public ResponseEntity<ApiErrorResponse> handleWebExchangeBindException(
+            WebExchangeBindException ex,
             ServerHttpRequest request
     ) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
+        ex.getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
 
@@ -33,8 +32,10 @@ public class GlobalExceptionHandler {
                 .path(request.getPath().value())
                 .messages(errors)
                 .build();
+
         return ResponseEntity.badRequest().body(response);
     }
+
 
 
     @ExceptionHandler(HttpStatusCodeException.class)
