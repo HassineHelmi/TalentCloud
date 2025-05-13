@@ -25,18 +25,28 @@ public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
  
-    //@Value("${KEYCLOAK_URL}")
-    //private String KEYCLOAK_BASE_URL;
-    //@Value("${KEYCLOAK_REALM}")
-    //private String KEYCLOAK_REALM;  
+
+    @Value("${keycloak.client-id}")
+    private String clientId;
     @Value("${keycloak.client-secret}")
     private String clientSecret;
+    @Value("${KEYCLOAK_URL}")
+    private String keycloakBaseUrl;
+    @Value("${KEYCLOAK_REALM}")
+    private String keycloakRealm;
+    
+    private String getTokenUrl() {
+        return keycloakBaseUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token";
+    }
+    
+    private String getAdminUserUrl() {
+        return keycloakBaseUrl + "/admin/realms/" + keycloakRealm + "/users";
+    }
+    
+    private String getRolesUrl() {
+        return keycloakBaseUrl + "/admin/realms/" + keycloakRealm + "/roles";
+    }
 
-    private final String KEYCLOAK_BASE_URL = "https://keycloak.talentcloud-dev.com";
-
-    private final String KEYCLOAK_TOKEN_URL = "https://keycloak.talentcloud-dev.com/realms/talent/protocol/openid-connect/token";
-    private final String KEYCLOAK_ADMIN_URL = "https://keycloak.talentcloud-dev.com/admin/realms/talent/users";
-    private final String KEYCLOAK_ROLES_URL = "https://keycloak.talentcloud-dev.com/admin/realms/talent/roles";
 
     private final KeycloakService keycloakService;
     private final RestTemplate restTemplate;
@@ -61,7 +71,7 @@ public class AuthService {
 
                 MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
                 body.add("grant_type", "password");
-                body.add("client_id", "public-client");
+                body.add("client_id", clientId);
                 body.add("client_secret", clientSecret);
                 body.add("username", request.getUsername());
                 body.add("password", request.getPassword());
@@ -69,10 +79,10 @@ public class AuthService {
 
                 HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
 
-                logger.debug("Token request URL: {}", KEYCLOAK_TOKEN_URL);
+                logger.debug("Token request URL: {}", getTokenUrl());
                 logger.debug("Token request body: {}", body);
 
-                ResponseEntity<String> response = restTemplate.postForEntity(KEYCLOAK_TOKEN_URL, entity, String.class);
+                ResponseEntity<String> response = restTemplate.postForEntity(getTokenUrl(), entity, String.class);
 
                 JsonNode tokenJson = objectMapper.readTree(response.getBody());
                 String accessToken = tokenJson.get("access_token").asText();
@@ -131,12 +141,12 @@ public class AuthService {
                                         keycloakUser.put("credentials", Collections.singletonList(credentials));
 
                                         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(keycloakUser, headers);
-                                        restTemplate.postForEntity(KEYCLOAK_ADMIN_URL, requestEntity, String.class); // Original response stored in 'response', but not directly used below for this line.
+                                        restTemplate.postForEntity(getAdminUserUrl(), requestEntity, String.class); // Original response stored in 'response', but not directly used below for this line.
 
                                         logger.info("User created successfully in Keycloak");
 
                                         ResponseEntity<String> usersResponse = restTemplate.exchange(
-                                                KEYCLOAK_ADMIN_URL + "?username=" + request.getUsername(),
+                                                getAdminUserUrl() + "?username=" + request.getUsername(),
                                                 HttpMethod.GET,
                                                 new HttpEntity<>(headers),
                                                 String.class
@@ -152,7 +162,7 @@ public class AuthService {
                                         logger.info("Retrieved user ID from Keycloak: {}", keycloakActualUserId);
 
                                         ResponseEntity<String> rolesResponse = restTemplate.exchange(
-                                                KEYCLOAK_ROLES_URL,
+                                                getRolesUrl(),
                                                 HttpMethod.GET,
                                                 new HttpEntity<>(headers),
                                                 String.class
@@ -166,7 +176,7 @@ public class AuthService {
                                         }
                                         logger.info("Found role ID for role {}: {}", request.getRole(), roleId);
 
-                                        String roleAssignmentUrl = KEYCLOAK_ADMIN_URL + "/" + keycloakActualUserId + "/role-mappings/realm";
+                                        String roleAssignmentUrl = getAdminUserUrl() + "/" + keycloakActualUserId + "/role-mappings/realm";
                                         List<Map<String, Object>> rolesList = new ArrayList<>();
                                         Map<String, Object> roleMap = new HashMap<>();
                                         roleMap.put("id", roleId);
