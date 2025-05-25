@@ -73,4 +73,8 @@ public class ClientService implements IServiceClient {
                 })
                 .orElseThrow(() -> new ClientNotFoundException("Client not found with id " + clientId));
     }
+    @Override
+    public Optional<Client> getClientProfileByUserId(Long userId) {
+        return clientRepository.findByUserId(userId);
+    }
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="20250523-1-alter-candidates-user-id-type" author="helmi">
+        <comment>Alter candidates.user_id to BIGINT, handling existing data if any.</comment>
+        <sql>
+            ALTER TABLE candidates ALTER COLUMN user_id TYPE BIGINT USING user_id::bigint;
+        </sql>
+        <rollback>
+            ALTER TABLE candidates ALTER COLUMN user_id TYPE VARCHAR(255) USING user_id::varchar;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20250523-1.5-populate-null-user-ids" author="helmi">
+        <comment>Populate existing NULL user_id values with a default (e.g., 0) if they exist.</comment>
+        <sql>
+            UPDATE public.candidates SET user_id = 0 WHERE user_id IS NULL;
+        </sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20250523-2-add-constraints-to-candidates-user-id" author="helmi">
+        <comment>Add NOT NULL and UNIQUE constraints to candidates.user_id.</comment>
+        <addNotNullConstraint tableName="candidates" columnName="user_id" columnDataType="BIGINT"/>
+        <addUniqueConstraint tableName="candidates" columnNames="user_id" constraintName="UQ_CANDIDATES_USER_ID"/>
+        <rollback>
+            <dropUniqueConstraint tableName="candidates" constraintName="UQ_CANDIDATES_USER_ID"/>
+            <dropNotNullConstraint tableName="candidates" columnName="user_id"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

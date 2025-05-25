@@ -1,12 +1,12 @@
 package com.talentcloud.auth.service;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.talentcloud.auth.dto.LoginRequest;
 import com.talentcloud.auth.dto.LogoutRequest;
 import com.talentcloud.auth.dto.RegisterRequest;
 import com.talentcloud.auth.exception.*;
+import com.talentcloud.auth.model.Role;
 import com.talentcloud.auth.model.User;
 import com.talentcloud.auth.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,7 +26,6 @@ import java.util.*;
 public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
- 
 
     @Value("${keycloak.client-id}")
     private String clientId;
@@ -36,15 +35,15 @@ public class AuthService {
     private String keycloakBaseUrl;
     @Value("${KEYCLOAK_REALM}")
     private String keycloakRealm;
-    
+
     private String getTokenUrl() {
         return keycloakBaseUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token";
     }
-    
+
     private String getAdminUserUrl() {
         return keycloakBaseUrl + "/admin/realms/" + keycloakRealm + "/users";
     }
-    
+
     private String getRolesUrl() {
         return keycloakBaseUrl + "/admin/realms/" + keycloakRealm + "/roles";
     }
@@ -128,48 +127,66 @@ public class AuthService {
                                 keycloakUser.put("credentials", List.of(credentials));
 
                                 HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(keycloakUser, headers);
-                                restTemplate.postForEntity(getAdminUserUrl(), requestEntity, String.class);
+                                ResponseEntity<String> creationResponse = restTemplate.postForEntity(getAdminUserUrl(), requestEntity, String.class);
                                 logger.info("User created successfully in Keycloak");
 
-                                ResponseEntity<String> usersResponse = restTemplate.exchange(
-                                        getAdminUserUrl() + "?username=" + request.getUsername(),
-                                        HttpMethod.GET,
-                                        new HttpEntity<>(headers),
-                                        String.class
-                                );
-                                String keycloakUserId = extractUserIdFromResponse(usersResponse.getBody());
-                                if (keycloakUserId == null) {
-                                    throw new KeycloakOperationException("Unable to retrieve user ID from Keycloak");
+                                // *** MODIFICATION START ***
+                                // Extract Keycloak user ID from the Location header
+                                String keycloakUserId = null;
+                                if (creationResponse.getHeaders().containsKey(HttpHeaders.LOCATION)) {
+                                    String locationHeader = creationResponse.getHeaders().getFirst(HttpHeaders.LOCATION);
+                                    if (locationHeader != null) {
+                                        // The location header typically looks like:
+                                        // http://<keycloak-host>:<port>/admin/realms/<realm>/users/<userId>
+                                        // We need to extract the last segment which is the userId
+                                        int lastSlashIndex = locationHeader.lastIndexOf('/');
+                                        if (lastSlashIndex != -1 && lastSlashIndex < locationHeader.length() - 1) {
+                                            keycloakUserId = locationHeader.substring(lastSlashIndex + 1);
+                                        }
+                                    }
                                 }
+
+                                if (keycloakUserId == null) {
+                                    throw new KeycloakOperationException("Unable to retrieve user ID from Keycloak's Location header after creation.");
+                                }
+                                // *** MODIFICATION END ***
+
+
+                                // Keycloak expects the role name as a String, so we use request.getRole().getRole()
+                                String keycloakRoleName = request.getRole().getRole();
+
                                 ResponseEntity<String> rolesResponse = restTemplate.exchange(
                                         getRolesUrl(),
                                         HttpMethod.GET,
                                         new HttpEntity<>(headers),
                                         String.class
                                 );
-                                String roleId = findRoleId(rolesResponse.getBody(), request.getRole());
+                                String roleId = findRoleId(rolesResponse.getBody(), keycloakRoleName);
                                 if (roleId == null) {
-                                    throw new KeycloakOperationException("Role not found: " + request.getRole());
+                                    throw new KeycloakOperationException("Role not found in Keycloak: " + keycloakRoleName);
                                 }
+
                                 // Assign role
                                 String roleAssignmentUrl = getAdminUserUrl() + "/" + keycloakUserId + "/role-mappings/realm";
-                                List<Map<String, Object>> rolesList = List.of(Map.of("id", roleId, "name", request.getRole()));
+                                // Ensure the 'name' sent to Keycloak matches what Keycloak expects
+                                List<Map<String, Object>> rolesList = List.of(Map.of("id", roleId, "name", keycloakRoleName));
                                 HttpEntity<List<Map<String, Object>>> roleRequest = new HttpEntity<>(rolesList, headers);
                                 restTemplate.postForEntity(roleAssignmentUrl, roleRequest, String.class);
 
-                                logger.info("Role assigned successfully to user");
+                                logger.info("Role assigned successfully to user in Keycloak");
+
                                 User user = new User();
                                 user.setKeycloakId(keycloakUserId);
                                 user.setUsername(request.getUsername());
                                 user.setEmail(request.getEmail());
-                                user.setRole(request.getRole().toUpperCase());
+                                user.setRole(request.getRole()); // Direct assignment now as RegisterRequest.role is Role enum
                                 return user;
                             })
                             .subscribeOn(Schedulers.boundedElastic())
                             .flatMap(user -> userRepository.save(user)
                                     .doOnSuccess(savedUser -> logger.info(
                                             "User saved successfully in DB with ID: {} and Username: {}",
-                                            savedUser.getId(), savedUser.getUsername()))
+                                            savedUser.getUser_id(), savedUser.getUsername()))
                                     .doOnError(error -> logger.error("Error saving user to DB: {}", error.getMessage(), error))
                                     .thenReturn(ResponseEntity.ok("User registered and role assigned successfully!")));
                 });
@@ -201,28 +218,8 @@ public class AuthService {
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
-
-    private String extractUserIdFromResponse(String responseBody) {
-        JsonNode userArray;
-        try {
-            userArray = objectMapper.readTree(responseBody);
-        } catch (Exception e) {
-            throw new KeycloakUserParsingException("Error parsing Keycloak user response: " + e.getMessage());
-        }
-        if (!userArray.isArray() || userArray.isEmpty()) {
-            throw new KeycloakUserParsingException("Keycloak user response is empty or not an array: " + responseBody);
-        }
-        JsonNode userNode = userArray.get(0);
-        JsonNode idNode = userNode.get("id");
-
-        if (idNode == null || idNode.isNull()) {
-            throw new KeycloakUserParsingException("User ID not found in Keycloak response: " + responseBody);
-        }
-        return idNode.asText();
-    }
-
-
-    private String findRoleId(String rolesResponseBody, String roleName) {
+    // This method now expects a Role enum and converts it to its string representation
+    private String findRoleId(String rolesResponseBody, String roleName) { // Kept roleName as String as it's the actual name from Keycloak
         JsonNode rolesArray;
         try {
             rolesArray = objectMapper.readTree(rolesResponseBody);
@@ -233,6 +230,7 @@ public class AuthService {
             throw new KeycloakRoleNotFoundException("Roles response is not an array: " + rolesResponseBody);
         }
         for (JsonNode role : rolesArray) {
+            // Compare with the provided roleName string (e.g., "ROLE_ADMIN")
             if (role.has("name") && role.get("name").asText().equalsIgnoreCase(roleName)) {
                 JsonNode idNode = role.get("id");
                 if (idNode != null && !idNode.isNull()) {
@@ -240,7 +238,6 @@ public class AuthService {
                 }
             }
         }
-        throw new KeycloakRoleNotFoundException("Requested role not found: " + roleName);
+        throw new KeycloakRoleNotFoundException("Requested role not found in Keycloak: " + roleName);
     }
-
 }

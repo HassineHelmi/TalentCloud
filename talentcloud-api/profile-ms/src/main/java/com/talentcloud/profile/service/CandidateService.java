@@ -65,4 +65,9 @@ public class CandidateService implements IServiceCandidate {
 
         return candidateRepository.save(existingCandidate);
     }
+
+    @Override
+    public Optional<Candidate> getCandidateProfileByUserId(Long userId) {
+        return candidateRepository.findByUserId(userId);
+    }
 }

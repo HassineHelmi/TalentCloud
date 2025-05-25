@@ -20,45 +20,47 @@ public class Candidate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long candidateId;
+    private Long candidateId; // [cite: 113]
 
-    private Long userId;
+    // --- MODIFIED LINE ---
+    @Column(name = "user_id", unique = true, nullable = false) // Added unique and nullable constraints for integrity
+    private Long userId; // Changed from String to Long to match auth-ms.User.id [cite: 113]
+    // ---------------------
 
-    private String profilePicture;
+    private String profilePicture; // [cite: 114]
 
-    private String resume;
+    private String resume; // [cite: 114]
 
     @Column(columnDefinition = "TEXT")
-    private String jobPreferences;
+    private String jobPreferences; // [cite: 114]
 
-    private String jobTitle;
+    private String jobTitle; // [cite: 115]
 
     @Enumerated(EnumType.STRING)
     @Column(name = "visibility_settings")
-    private VisibilitySettings visibilitySettings;
+    private VisibilitySettings visibilitySettings; // [cite: 115]
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // [cite: 116, 117]
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt; // [cite: 117]
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Education> educations;
+    private Set<Education> educations; // [cite: 118]
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Experience> experiences;
+    private Set<Experience> experiences; // [cite: 119]
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Certification> certifications;
+    private Set<Certification> certifications; // [cite: 120]
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Skills> skills;
+    private Set<Skills> skills; // [cite: 121]
 
-    // Add blocked field
-    private boolean blocked;  // Indicates whether the profile is blocked
+    private boolean blocked; // [cite: 122]
 }

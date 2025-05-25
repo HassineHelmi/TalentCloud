@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-profile-users-table" author="helmi">
+        <comment>Creates the central 'users' table for the Profile Service.</comment>
+        <createTable tableName="users" remarks="Central 'users' table for the Profile Service.">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="auth_service_user_id" type="BIGINT" remarks="Foreign Key to the auth-ms.users.id.">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="VARCHAR(255)" remarks="User's email, denormalized from auth-ms.">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()" remarks="Timestamp when the record was created."/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" remarks="Timestamp when the record was last updated."/>
+        </createTable>
+        <createIndex tableName="users" indexName="idx_users_auth_service_user_id" unique="true">
+            <column name="auth_service_user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="rename-table-users-to-profiles" author="helmi">
+        <comment>Renames the 'users' table in profile-ms to 'profiles' for clarity.</comment>
+        <renameTable oldTableName="users" newTableName="profiles"/>
+    </changeSet>
+
+    <changeSet id="drop-and-create-profiles-index" author="helmi">
+        <comment>Drops the old index and recreates it with the new name for the 'profiles' table.</comment>
+        <dropIndex tableName="profiles" indexName="idx_users_auth_service_user_id"/>
+        <createIndex tableName="profiles" indexName="idx_profiles_auth_service_user_id" unique="true">
+            <column name="auth_service_user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create-roles-table" author="helmi">
+        <comment>Creates the 'roles' table to define system roles.</comment>
+        <createTable tableName="roles" remarks="Defines the different roles in the system.">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)" remarks="Unique name of the role (e.g., 'ROLE_ADMIN', 'ROLE_CLIENT').">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT" remarks="Description of the role."/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insert-initial-roles" author="helmi">
+        <comment>Inserts initial roles into the 'roles' table with specific IDs and new naming for consistent management.</comment>
+        <insert tableName="roles">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="ROLE_ADMIN"/>
+            <column name="description" value="System administrator with full access to the platform."/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="ROLE_CLIENT"/>
+            <column name="description" value="Represents a company or organization looking to hire."/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="ROLE_CANDIDATE"/>
+            <column name="description" value="An individual seeking job opportunities and managing their profile."/>
+        </insert>
+        <sql endDelimiter=";">
+            SELECT setval('roles_id_seq', (SELECT MAX(id) FROM roles));
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-user-roles-table" author="helmi">
+        <comment>Creates the junction table for user-role many-to-many relationship.</comment>
+        <createTable tableName="user_roles" remarks="Junction table for user-role many-to-many relationship.">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="user_roles" columnNames="user_id, role_id" constraintName="pk_user_roles"/>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="user_id"
+                                 referencedTableName="profiles" referencedColumnNames="id"
+                                 constraintName="fk_user_roles_user_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="role_id"
+                                 referencedTableName="roles" referencedColumnNames="id"
+                                 constraintName="fk_user_roles_role_id" onDelete="RESTRICT"/>
+        <createIndex tableName="user_roles" indexName="idx_user_roles_user_id">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex tableName="user_roles" indexName="idx_user_roles_role_id">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create-clients-table-initial" author="helmi">
+        <comment>Creates the 'clients' table with its initial expected columns from the old schema.</comment>
+        <createTable tableName="clients">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true" /> </column>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="blocked" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="company_description" type="TEXT"/>
+            <column name="company_name" type="VARCHAR(255)"/>
+            <column name="country" type="VARCHAR(100)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="industry" type="VARCHAR(100)"/>
+            <column name="linked_in_url" type="VARCHAR(255)"/>
+
+            <column name="phone_number" type="VARCHAR(20)"/>
+            <column name="website" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-candidates-table-initial" author="helmi">
+        <comment>Creates the 'candidates' table with its initial expected columns from the old schema.</comment>
+        <createTable tableName="candidates">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="blocked" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="job_preference" type="VARCHAR(255)"/>
+            <column name="profile_picture" type="VARCHAR(255)"/>
+            <column name="resume" type="VARCHAR(255)"/>
+            <column name="visibility_setting" type="VARCHAR(50)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-admins-table-initial" author="helmi">
+        <comment>Creates the 'admins' table with its initial expected columns from the old schema.</comment>
+        <createTable tableName="admins">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true" /> </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-skills-table" author="helmi">
+        <comment>Creates the 'skills' table for candidate skills.</comment>
+        <createTable tableName="skills">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_skills_candidate_id"
+                             references="candidates(id)" />
+            </column>
+            <column name="custom_skill" type="VARCHAR(255)"/>
+            <column name="programming_language" type="VARCHAR(255)"/>
+            <column name="soft_skills" type="VARCHAR(255)"/>
+            <column name="technical_skill" type="VARCHAR(255)"/>
+            <column name="tools_and_technologies" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+        <createIndex tableName="skills" indexName="idx_skills_candidate_id">
+            <column name="candidate_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create-certifications-table" author="helmi">
+        <comment>Creates the 'certifications' table for candidate certifications.</comment>
+        <createTable tableName="certifications">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_cert_candidate_id"
+                             references="candidates(id)" />
+            </column>
+            <column name="date_obtention" type="DATE"/>
+
+            <column name="nom" type="VARCHAR(255)"/>
+            <column name="organisme" type="VARCHAR(255)"/>
+            <column name="certification_url" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+        <createIndex tableName="certifications" indexName="idx_cert_candidate_id">
+            <column name="candidate_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create-educations-table" author="helmi">
+        <comment>Creates the 'educations' table for candidate education history.</comment>
+        <createTable tableName="educations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_edu_candidate_id"
+                             references="candidates(id)" />
+            </column>
+            <column name="date_debut" type="DATE"/>
+            <column name="date_fin" type="DATE"/>
+            <column name="diplome" type="VARCHAR(255)"/>
+            <column name="domaine_etude" type="VARCHAR(255)"/>
+            <column name="en_cour" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="institution" type="VARCHAR(255)"/>
+
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+        <createIndex tableName="educations" indexName="idx_edu_candidate_id">
+            <column name="candidate_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create-experience-table" author="helmi">
+        <comment>Creates the 'experience' table for candidate work experience.</comment>
+        <createTable tableName="experience">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_exp_candidate_id"
+                             references="candidates(id)" />
+            </column>
+            <column name="job_title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location" type="VARCHAR(255)" remarks="Location of the job"/>
+            <column name="date_debut" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_fin" type="DATE"/>
+            <column name="description" type="TEXT"/>
+            <column name="is_current" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="entreprise" type="VARCHAR(255)"/>
+            <column name="technologies" type="VARCHAR(500)"/>
+            <column name="type_contract" type="VARCHAR(50)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+        <createIndex tableName="experience" indexName="idx_exp_candidate_id">
+            <column name="candidate_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="refactor-clients-table" author="helmi">
+        <comment>Refactors 'clients' table to link to the new central 'profiles' table. Drops old user_id.</comment>
+        <dropColumn tableName="clients" columnName="user_id" />
+        <addColumn tableName="clients">
+            <column name="profile_user_id" type="BIGINT" remarks="Foreign Key to the new profiles.id.">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="clients" baseColumnNames="profile_user_id"
+                                 referencedTableName="profiles" referencedColumnNames="id"
+                                 constraintName="fk_clients_profile_user_id" onDelete="CASCADE"/>
+        <createIndex tableName="clients" indexName="idx_clients_profile_user_id">
+            <column name="profile_user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="refactor-candidates-table" author="helmi">
+        <comment>Refactors 'candidates' table to link to the new central 'profiles' table.</comment>
+        <addColumn tableName="candidates">
+            <column name="profile_user_id" type="BIGINT" remarks="Foreign Key to the new profiles.id.">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="candidates" baseColumnNames="profile_user_id"
+                                 referencedTableName="profiles" referencedColumnNames="id"
+                                 constraintName="fk_candidates_profile_user_id" onDelete="CASCADE"/>
+        <createIndex tableName="candidates" indexName="idx_candidates_profile_user_id">
+            <column name="profile_user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="refactor-admins-table" author="helmi">
+        <comment>Refactors 'admins' table to link to the new central 'profiles' table. Drops old user_id.</comment>
+        <dropColumn tableName="admins" columnName="user_id" />
+        <addColumn tableName="admins">
+            <column name="profile_user_id" type="BIGINT" remarks="Foreign Key to the new profiles.id.">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="admins" baseColumnNames="profile_user_id"
+                                 referencedTableName="profiles" referencedColumnNames="id"
+                                 constraintName="fk_admins_profile_user_id" onDelete="CASCADE"/>
+        <createIndex tableName="admins" indexName="idx_admins_profile_user_id">
+            <column name="profile_user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

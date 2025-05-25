@@ -13,6 +13,7 @@ public interface IServiceClient {
     Client updateClientProfile(Long clientId, UpdateClientDto client);
     List<Client> getAllClients();  // Add this method
     Client blockProfile(Long clientId);  // Add the blockProfile method for Client
+    Optional<Client> getClientProfileByUserId(Long userId); // Added method to find by user ID
 
 }
 

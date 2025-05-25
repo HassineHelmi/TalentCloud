@@ -1,6 +1,7 @@
 package com.talentcloud.auth.repository;
 
 import com.talentcloud.auth.model.User;
+import org.springframework.data.r2dbc.repository.Query; // <--- ADD THIS IMPORT
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,9 @@ public interface UserRepository extends ReactiveCrudRepository<User, Long> {
     Mono<User> findByUsername(String username);
     Mono<User> findByEmail(String email);
 
-    // Add these reactive existence check methods
+    @Query("SELECT EXISTS (SELECT 1 FROM users WHERE username = $1)")
     Mono<Boolean> existsByUsername(String username);
+
+    @Query("SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)")
     Mono<Boolean> existsByEmail(String email);
 }
