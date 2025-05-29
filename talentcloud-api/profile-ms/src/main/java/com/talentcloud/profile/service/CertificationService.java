@@ -32,7 +32,7 @@ public class CertificationService implements IServiceCertification {
     @Override
     public List<Certification> getAllCertificationsByCandidateId(Long candidateId) {
         return candidateRepository.findById(candidateId)
-                .map(certificationRepository::findByCandidate)  // Using the corrected method to find by Candidate
+                .map(certificationRepository::findByCandidate)
                 .orElseThrow(() -> new IllegalArgumentException("Candidate not found with ID: " + candidateId));
     }
 
@@ -40,40 +40,35 @@ public class CertificationService implements IServiceCertification {
     public Certification addCertification(Certification certification, Long candidateId) {
         return candidateRepository.findById(candidateId)
                 .map(candidate -> {
-                    certification.setCandidate(candidate);  // Associate the candidate
-                    certification.setCreatedAt(LocalDateTime.now());  // Set the created_at timestamp
-                    certification.setUpdatedAt(LocalDateTime.now());  // Set the updated_at timestamp
-                    return certificationRepository.save(certification);  // Save to the repository
+                    certification.setCandidate(candidate);
+                    certification.setCreatedAt(LocalDateTime.now());
+                    certification.setUpdatedAt(LocalDateTime.now());
+                    return certificationRepository.save(certification);
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Candidate not found with ID: " + candidateId));  // Handle case where candidate doesn't exist
+                .orElseThrow(() -> new IllegalArgumentException("Candidate not found with ID: " + candidateId));
     }
-
 
     @Override
     public Certification updateCertification(Long certificationId, UpdateCertificationDto dto) {
         Certification existingCertification = certificationRepository.findById(certificationId)
                 .orElseThrow(() -> new IllegalArgumentException("Certification not found with id: " + certificationId));
-
         // Update the certification with data from the DTO
         existingCertification.setNom(dto.getNom());
         existingCertification.setOrganisme(dto.getOrganisme());
         existingCertification.setDateObtention(dto.getDateObtention());
-        existingCertification.setDatevalidite(dto.getDatevalidite());
-        existingCertification.setUrlVerification(dto.getUrlVerification());
+        // Removed existingCertification.setDatevalidite(dto.getDatevalidite());
+        existingCertification.setCertificationUrl(dto.getCertificationUrl()); // Updated field
 
         // Set the updatedAt timestamp to the current time
         existingCertification.setUpdatedAt(LocalDateTime.now());
-
         // Save and return the updated certification
         return certificationRepository.save(existingCertification);
     }
-
 
     @Override
     public void deleteCertification(Long certificationId) {
         Certification existingCertification = certificationRepository.findById(certificationId)
                 .orElseThrow(() -> new IllegalArgumentException("Certification not found with id: " + certificationId));
-
         certificationRepository.delete(existingCertification);
     }
 }

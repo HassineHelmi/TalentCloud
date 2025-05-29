@@ -32,8 +32,7 @@ public class EducationController {
         education.setDomaineEtude(request.domaineEtude());
         education.setDateDebut(request.dateDebut());
         education.setDateFin(request.dateFin());
-        education.setMoyenne(request.moyenne());
-        education.setEnCours(request.enCours());
+        education.setEnCour(request.enCour());
 
         Education saved = educationService.addEducation(education, candidateId);
         return ResponseEntity.ok(saved);

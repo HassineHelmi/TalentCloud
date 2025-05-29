@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByBlockedFalse();
-    Optional<Client> findByUserId(Long userId);
-
+    Optional<Client> findByProfileUserId(Long profileUserId);
 }

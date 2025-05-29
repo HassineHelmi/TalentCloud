@@ -21,14 +21,12 @@ public class AdminService implements IServiceAdmin {
     }
 
     @Override
-    public Optional<Admin> getAdminProfileByUserId(Long userId) {
-        return adminRepository.findByUserId(userId);
+    public Optional<Admin> getAdminProfileByProfileUserId(Long profileUserId) { // Changed parameter name
+        return adminRepository.findByProfileUserId(profileUserId);
     }
 
     @Override
     public Admin createAdminProfile(Admin admin) {
         return adminRepository.save(admin);
     }
-
-
 }

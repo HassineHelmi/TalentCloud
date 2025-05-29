@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 public class UpdateSkillsDto {
     @NotBlank(message = "Programming languages are required.")
-    private String programmingLanguages;
+    private String programmingLanguage;
     private String softSkills;
-    private String technicalSkills;
+    private String technicalSkill;
     private String toolsAndTechnologies;
-    private String customSkills;
+    private String customSkill;
 }

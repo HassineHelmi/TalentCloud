@@ -1,6 +1,5 @@
 package com.talentcloud.profile.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,9 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 public class Admin {
     @Id
-    private Long userId;
-}
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name = "profile_id", nullable = false, unique = true)
+    private Long profileUserId; // Renamed from profile_user_id to profileUserId
+}

@@ -24,29 +24,30 @@ public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long clientId;
+    private Long id; // Renamed from clientId to id to match schema
 
-    @NotNull(message = "User ID is required")
-    private Long userId;
-
+    @Column(name = "profile_id", unique = true, nullable = false)
+    private Long profileUserId; // Renamed from userId to profileUserId
+    @Column(name = "company_name")
     @NotBlank(message = "Company name is required")
     private String companyName;
 
     private String industry;
 
     private String address;
+
     private String country;
 
     private String phoneNumber;
 
-    @Email(message = "Please provide a valid email address")
     private String email;
 
     private String website;
-    private String linkedInUrl;
-    private String logoUrl;
 
-    @Column(columnDefinition = "TEXT")
+    private String linkedInUrl;
+
+
+    @Column(columnDefinition = "TEXT", name = "company_description")
     private String companyDescription;
 
     @CreatedDate
@@ -59,6 +60,5 @@ public class Client {
     @Column(insertable = false)
     private LocalDateTime updatedAt;
 
-    // Add blocked field
-    private boolean blocked;  // Indicates whether the profile is blocked
+    private boolean blocked;
 }

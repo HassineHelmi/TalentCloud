@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "experiences")
+@Table(name = "experience") // Table name in schema is 'experience' (singular)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,42 +30,48 @@ public class Experience {
     private Long id;
 
     @NotBlank(message = "Le titre du poste est obligatoire.")
-    private String titrePoste;
+    @Column(name = "job_title") // Renamed to match schema
+    private String jobTitle;
 
     @NotBlank(message = "Le nom de l'entreprise est obligatoire.")
-    private String entreprise;
+    @Column(name = "company_name") // Renamed to match schema
+    private String companyName;
 
     @NotNull(message = "La date de début est obligatoire.")
+    @Column(name = "date_debut") // Renamed to match schema
     private LocalDate dateDebut;
 
+    @Column(name = "date_fin") // Renamed to match schema
     private LocalDate dateFin;
 
     @Column(length = 1000)
     private String description;
 
-    private String lieu;
+    @Column(name = "location") // Renamed to match schema
+    private String location;
 
     @NotNull(message = "Le champ 'enCours' doit être spécifié.")
-    private Boolean enCours;
-
-    // ✅ NEW FIELDS
+    @Column(name = "is_current") // Renamed to match schema
+    private Boolean isCurrent; // Renamed to match schema
 
     @URL(message = "Veuillez fournir une URL valide pour le site de l'entreprise.")
-    private String siteEntreprise;
+    @Column(name = "entreprise") // Renamed to match schema's `entreprise` (for website)
+    private String entreprise;
 
     @Pattern(
             regexp = "^(CDI|CDD|Freelance|Stage|Alternance)?$",
             message = "Type de contrat invalide. Les valeurs valides sont : CDI, CDD, Freelance, Stage, Alternance."
     )
-    private String typeContrat;
+    @Column(name = "type_contract") // Renamed to match schema
+    private String typeContract;
 
     @Column(length = 1000)
     private String technologies;
 
-    // 📌 Relation to Candidate
+    // Relation to Candidate
     @ManyToOne
     @JoinColumn(name = "candidate_id", nullable = false)
-    @JsonIgnore  // 🛑 Prevents infinite loop during serialization
+    @JsonIgnore
     private Candidate candidate;
 
     @CreatedDate

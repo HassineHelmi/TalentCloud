@@ -1,6 +1,5 @@
 package com.talentcloud.profile.model;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -22,17 +21,18 @@ public class Certification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nom;
     private String organisme;
     private LocalDate dateObtention;
-    private LocalDate datevalidite;
+    // Removed private LocalDate datevalidite;
+
     @URL(message = "Veuillez fournir une URL valide pour la certification")
-    private String urlVerification;
+    @Column(name = "certification_url") // Renamed to match schema
+    private String certificationUrl;
 
     @ManyToOne
     @JoinColumn(name = "candidate_id")
-    @JsonIgnore  // 🛑 Prevents infinite loop during serialization
+    @JsonIgnore
     private Candidate candidate;
 
     @CreatedDate

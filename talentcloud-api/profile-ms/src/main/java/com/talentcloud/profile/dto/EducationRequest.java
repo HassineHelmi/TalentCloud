@@ -1,6 +1,5 @@
 package com.talentcloud.profile.dto;
 
-
 import java.time.LocalDate;
 
 public record EducationRequest(
@@ -9,7 +8,6 @@ public record EducationRequest(
         String domaineEtude,
         LocalDate dateDebut,
         LocalDate dateFin,
-        Double moyenne,
-        Boolean enCours
-) {}
 
+        Boolean enCour // Renamed
+) {}

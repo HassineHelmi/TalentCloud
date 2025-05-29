@@ -1,13 +1,12 @@
 package com.talentcloud.profile.service;
 import com.talentcloud.profile.dto.UpdateCandidateDto;
-
 import com.talentcloud.profile.exception.CandidateNotFoundException;
 import com.talentcloud.profile.iservice.IServiceCandidate;
 import com.talentcloud.profile.model.Candidate;
 import com.talentcloud.profile.repository.CandidateRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,50 +23,55 @@ public class CandidateService implements IServiceCandidate {
     }
 
     @Override
+    @Transactional
     public Candidate createCandidateProfile(Candidate candidate) {
-        candidate.setCreatedAt(LocalDateTime.now());
-        candidate.setUpdatedAt(LocalDateTime.now());
         return candidateRepository.save(candidate);
     }
 
     @Override
     @Transactional
-    public Candidate blockProfile(Long candidateId) throws Exception {
+    public Candidate blockProfile(Long candidateId) throws CandidateNotFoundException {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with id " + candidateId));
-
         existingCandidate.setBlocked(true);
-        existingCandidate.setUpdatedAt(LocalDateTime.now());
         return candidateRepository.save(existingCandidate);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Candidate> getCandidateById(Long candidateId) {
-        return candidateRepository.findById(candidateId);  // Find by ID
+        return candidateRepository.findById(candidateId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Candidate> getAllCandidates() {
-        return candidateRepository.findAll();  // Get all candidates
+        return candidateRepository.findAll();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Candidate> getCandidateProfileByProfileUserId(Long profileUserId) {
+        return candidateRepository.findByProfileUserId(profileUserId);
+    }
+
     @Override
     @Transactional
-    public Candidate editCandidateProfile(Long candidateId, UpdateCandidateDto dto) throws Exception {
+    public Candidate editCandidateProfile(Long candidateId, UpdateCandidateDto dto) throws CandidateNotFoundException {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with id " + candidateId));
 
-        if (dto.getProfilePicture() != null) existingCandidate.setProfilePicture(dto.getProfilePicture());
-        if (dto.getResume() != null) existingCandidate.setResume(dto.getResume());
-        if (dto.getJobPreferences() != null) existingCandidate.setJobPreferences(dto.getJobPreferences());
-        if (dto.getJobTitle() != null) existingCandidate.setJobTitle(dto.getJobTitle());
-
-        existingCandidate.setUpdatedAt(LocalDateTime.now());
+        // Update fields if DTO provides new values
+        if (dto.getResume_url() != null) {
+            existingCandidate.setResume_url(dto.getResume_url());
+        }
+        if (dto.getJobPreference() != null) {
+            existingCandidate.setJobPreference(dto.getJobPreference());
+        }
+        if (dto.getVisibilitySettings() != null) {
+            existingCandidate.setVisibilitySetting(dto.getVisibilitySettings());
+        }
 
         return candidateRepository.save(existingCandidate);
-    }
-
-    @Override
-    public Optional<Candidate> getCandidateProfileByUserId(Long userId) {
-        return candidateRepository.findByUserId(userId);
     }
 }

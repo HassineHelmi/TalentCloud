@@ -27,9 +27,9 @@ public class EducationService implements IServiceEducation {
     public Education addEducation(Education education, Long candidateId) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new IllegalArgumentException("Candidate not found with ID: " + candidateId));
-
         education.setCandidate(candidate);
         education.setCreatedAt(LocalDateTime.now());
+        education.setUpdatedAt(LocalDateTime.now()); // Set updated_at on creation as well
 
         return educationRepository.save(education);
     }
@@ -38,28 +38,24 @@ public class EducationService implements IServiceEducation {
     public Education deleteEducation(Long educationId) {
         Education existingEducation = educationRepository.findById(educationId)
                 .orElseThrow(() -> new IllegalArgumentException("Education not found with ID: " + educationId));
-
-        educationRepository.delete(existingEducation); // Delete the education record
-        return existingEducation; // Return the deleted education for confirmation
+        educationRepository.delete(existingEducation);
+        return existingEducation;
     }
 
     @Override
     public Education editEducation(Long educationId, UpdateEducationDto dto) {
         Education existingEducation = educationRepository.findById(educationId)
                 .orElseThrow(() -> new IllegalArgumentException("Education not found with ID: " + educationId));
-
         if (dto.getInstitution() != null) existingEducation.setInstitution(dto.getInstitution());
         if (dto.getDiplome() != null) existingEducation.setDiplome(dto.getDiplome());
         if (dto.getDomaineEtude() != null) existingEducation.setDomaineEtude(dto.getDomaineEtude());
         if (dto.getDateDebut() != null) existingEducation.setDateDebut(dto.getDateDebut());
         if (dto.getDateFin() != null) existingEducation.setDateFin(dto.getDateFin());
-        if (dto.getMoyenne() != null) existingEducation.setMoyenne(dto.getMoyenne());
-        if (dto.getEnCours() != null) existingEducation.setEnCours(dto.getEnCours());
+        // Removed if (dto.getMoyenne() != null) existingEducation.setMoyenne(dto.getMoyenne());
+        if (dto.getEnCour() != null) existingEducation.setEnCour(dto.getEnCour()); // Updated field
 
         existingEducation.setUpdatedAt(LocalDateTime.now());
 
-        return educationRepository.save(existingEducation); // Save the updated education record
+        return educationRepository.save(existingEducation);
     }
-
-
 }

@@ -37,21 +37,19 @@ public class ClientService implements IServiceClient {
 
     @Override
     @Transactional
-    public Client updateClientProfile(Long clientId, UpdateClientDto client) {
-
-        System.out.println("ettst"+ clientId);
+    public Client updateClientProfile(Long clientId, UpdateClientDto clientDto) { // Renamed parameter to clientDto
+        System.out.println("ettst" + clientId);
         return clientRepository.findById(clientId)
                 .map(existingClient -> {
-                    if (client.getCompanyName() != null) existingClient.setCompanyName(client.getCompanyName());
-                    if (client.getIndustry() != null) existingClient.setIndustry(client.getIndustry());
-                    if (client.getAddress() != null) existingClient.setAddress(client.getAddress());
-                    if (client.getCountry() != null) existingClient.setCountry(client.getCountry());
-                    if (client.getPhoneNumber() != null) existingClient.setPhoneNumber(client.getPhoneNumber());
-                    if (client.getEmail() != null) existingClient.setEmail(client.getEmail());
-                    if (client.getWebsite() != null) existingClient.setWebsite(client.getWebsite());
-                    if (client.getLinkedInUrl() != null) existingClient.setLinkedInUrl(client.getLinkedInUrl());
-                    if (client.getLogoUrl() != null) existingClient.setLogoUrl(client.getLogoUrl());
-                    if (client.getCompanyDescription() != null) existingClient.setCompanyDescription(client.getCompanyDescription());
+                    if (clientDto.getCompanyName() != null) existingClient.setCompanyName(clientDto.getCompanyName());
+                    if (clientDto.getIndustry() != null) existingClient.setIndustry(clientDto.getIndustry());
+                    if (clientDto.getAddress() != null) existingClient.setAddress(clientDto.getAddress());
+                    if (clientDto.getCountry() != null) existingClient.setCountry(clientDto.getCountry());
+                    if (clientDto.getPhoneNumber() != null) existingClient.setPhoneNumber(clientDto.getPhoneNumber());
+                    if (clientDto.getEmail() != null) existingClient.setEmail(clientDto.getEmail());
+                    if (clientDto.getWebsite() != null) existingClient.setWebsite(clientDto.getWebsite());
+                    if (clientDto.getLinkedInUrl() != null) existingClient.setLinkedInUrl(clientDto.getLinkedInUrl());
+                    if (clientDto.getCompanyDescription() != null) existingClient.setCompanyDescription(clientDto.getCompanyDescription());
 
                     existingClient.setUpdatedAt(LocalDateTime.now());
                     return clientRepository.save(existingClient);
@@ -60,21 +58,21 @@ public class ClientService implements IServiceClient {
     }
     @Override
     public List<Client> getAllClients() {
-        return clientRepository.findAll();  // Fetch all clients from the database
+        return clientRepository.findAll();
     }
 
     @Override
     public Client blockProfile(Long clientId) {
         return clientRepository.findById(clientId)
                 .map(existingClient -> {
-                    existingClient.setBlocked(true); // Set blocked to true
-                    existingClient.setUpdatedAt(LocalDateTime.now()); // Update the timestamp
+                    existingClient.setBlocked(true);
+                    existingClient.setUpdatedAt(LocalDateTime.now());
                     return clientRepository.save(existingClient);
                 })
                 .orElseThrow(() -> new ClientNotFoundException("Client not found with id " + clientId));
     }
     @Override
-    public Optional<Client> getClientProfileByUserId(Long userId) {
-        return clientRepository.findByUserId(userId);
+    public Optional<Client> getClientProfileByProfileUserId(Long profileUserId) { // Updated method name
+        return clientRepository.findByProfileUserId(profileUserId);
     }
 }

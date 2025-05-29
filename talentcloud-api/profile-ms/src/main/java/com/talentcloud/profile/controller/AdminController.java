@@ -23,32 +23,27 @@ public class AdminController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getMyAdminProfile(Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
-
-        Optional<Admin> admin = adminService.getAdminProfileByUserId(userId);
+        Long profileUserId = Long.valueOf(authentication.getName());
+        Optional<Admin> admin = adminService.getAdminProfileByProfileUserId(profileUserId);
         if (admin.isPresent()) {
             return ResponseEntity.ok(admin.get());
         } else {
-            return ResponseEntity.notFound().build(); // Admin profile not found for this user ID
+            return ResponseEntity.notFound().build();
         }
     }
 
-    // This endpoint might be used for initial setup or by another admin to create one
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')") // Only existing ADMINs can create new admin profiles
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Admin> createAdminProfile(@RequestBody Admin admin, Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
-        // Ensure the admin being created is for the authenticated user, or that the current user has rights to create it.
-        // For simplicity, we'll enforce that the incoming admin.userId matches the authenticated user.
-        // In a real scenario, this might be more complex (e.g., an admin creating another admin's profile).
-        if (!userId.equals(admin.getUserId())) {
+        Long authenticatedProfileUserId = Long.valueOf(authentication.getName());
+        // Ensure the admin profile being created is for the authenticated user.
+        // Update getter call here
+        if (admin.getProfileUserId() == null || !admin.getProfileUserId().equals(authenticatedProfileUserId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         Admin createdAdmin = adminService.createAdminProfile(admin);
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }
-
-    // You can add other admin-specific endpoints here (e.g., view all users, manage roles etc.)
 }
