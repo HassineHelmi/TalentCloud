@@ -16,11 +16,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "candidates")
-@Getter                          // Add
-@Setter                          // Add
-@NoArgsConstructor               // Add
-@AllArgsConstructor              // Add
-// @Data                        // REMOVE!
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+// @Data
 @EntityListeners(AuditingEntityListener.class)
 public class Candidate {
 

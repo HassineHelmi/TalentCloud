@@ -4,7 +4,6 @@ import com.talentcloud.profile.dto.UpdateCandidateDto;
 import com.talentcloud.profile.dto.ErrorResponse;
 import com.talentcloud.profile.model.Candidate;
 import com.talentcloud.profile.model.Profile; // Import Profile model
-import com.talentcloud.profile.model.VisibilitySettings; // Assuming you have this enum
 import com.talentcloud.profile.iservice.IServiceCandidate;
 import com.talentcloud.profile.service.ProfileService; // Import ProfileService interface
 
@@ -186,14 +185,14 @@ public class CandidateController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
     public ResponseEntity<List<Candidate>> getAllCandidates() {
         List<Candidate> candidates = candidateService.getAllCandidates();
         return new ResponseEntity<>(candidates, HttpStatus.OK);
     }
 
     @PutMapping("/edit")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("hasRole('ROLE_CANDIDATE')")
     public ResponseEntity<?> editCandidateProfile(
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody @Valid UpdateCandidateDto dto
