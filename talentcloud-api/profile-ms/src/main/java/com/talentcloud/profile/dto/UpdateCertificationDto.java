@@ -12,11 +12,11 @@ import org.hibernate.validator.constraints.URL; // Added import for URL
 public class UpdateCertificationDto {
 
     @NotBlank(message = "Nom is required")
-    private String nom;
+    private String name;
     @NotBlank(message = "Organisme is required")
-    private String organisme;
+    private String organization;
     @NotNull(message = "Date d'obtention is required")
-    private LocalDate dateObtention;
+    private LocalDate obtainedDate;
 
 
     @URL(message = "Veuillez fournir une URL valide pour la certification") // Added annotation

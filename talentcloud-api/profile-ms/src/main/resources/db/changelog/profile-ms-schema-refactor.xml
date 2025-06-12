@@ -17,6 +17,12 @@
             <column name="email" type="VARCHAR(255)" remarks="User's email.">
                 <constraints nullable="false" unique="true"/>
             </column>
+            <column name="first_name" type="VARCHAR(255)" remarks="User's firstName.">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_name" type="VARCHAR(255)" remarks="User's lastName.">
+                <constraints nullable="false" />
+            </column>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()" remarks="Timestamp when the record was created."/>
             <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" remarks="Timestamp when the record was last updated."/>
         </createTable>
@@ -118,9 +124,11 @@
             <column name="company_name" type="VARCHAR(255)"/>
             <column name="country" type="VARCHAR(100)"/>
             <column name="industry" type="VARCHAR(100)"/>
-            <column name="linked_in_url" type="VARCHAR(255)"/>
+            <column name="linkedin_url" type="VARCHAR(255)"/>
             <column name="phone_number" type="VARCHAR(20)"/>
             <column name="website" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
             <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
         </createTable>
@@ -141,9 +149,9 @@
             <column name="profile_id" type="BIGINT" remarks="Foreign Key to the profiles.id, establishing this candidate as a profile.">
                 <constraints nullable="false" unique="true"/> </column>
             <column name="blocked" type="BOOLEAN" defaultValueBoolean="false"/>
-            <column name="job_preference" type="VARCHAR(255)"/>
+            <column name="job_preferences" type="VARCHAR(255)"/>
             <column name="resume_url" type="VARCHAR(255)" remarks="URL or path to the candidate's resume."/>
-            <column name="visibility_setting" type="VARCHAR(50)"/>
+            <column name="visibility_settings" type="VARCHAR(50)"/>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
             <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
         </createTable>
@@ -164,10 +172,10 @@
             <column name="candidate_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="custom_skill" type="VARCHAR(255)"/>
-            <column name="programming_language" type="VARCHAR(255)"/>
+            <column name="custom_skills" type="VARCHAR(255)"/>
+            <column name="programming_languages" type="VARCHAR(255)"/>
             <column name="soft_skills" type="VARCHAR(255)"/>
-            <column name="technical_skill" type="VARCHAR(255)"/>
+            <column name="technical_skills" type="VARCHAR(255)"/>
             <column name="tools_and_technologies" type="VARCHAR(255)"/>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
             <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
@@ -180,8 +188,8 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="20250527-unified-create-certifications-table" author="system-refactor">
-        <comment>Creates the 'certifications' table for candidate certifications.</comment>
+    <changeSet id="20250527-unified-create-certifications-table-modified" author="system-refactor-user-update">
+        <comment>Creates the 'certifications' table for candidate certifications. Column names 'nom' to 'name' and 'date_obtention' to 'obtained_date'.</comment>
         <createTable tableName="certifications">
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true" nullable="false"/>
@@ -189,9 +197,9 @@
             <column name="candidate_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="date_obtention" type="DATE"/>
-            <column name="nom" type="VARCHAR(255)"/>
-            <column name="organisme" type="VARCHAR(255)"/>
+            <column name="obtained_date" type="DATE"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="organization" type="VARCHAR(255)"/>
             <column name="certification_url" type="VARCHAR(255)"/>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
             <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
@@ -204,8 +212,8 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="20250527-unified-create-educations-table" author="system-refactor">
-        <comment>Creates the 'educations' table for candidate education history.</comment>
+    <changeSet id="20250527-unified-create-educations-table-modified" author="system-refactor-user-update">
+        <comment>Creates the 'educations' table for candidate education history. Column names 'date_debut' to 'start_date' and 'date_fin' to 'end_date'.</comment>
         <createTable tableName="educations">
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true" nullable="false"/>
@@ -213,12 +221,12 @@
             <column name="candidate_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="date_debut" type="DATE"/>
-            <column name="date_fin" type="DATE"/>
-            <column name="diplome" type="VARCHAR(255)"/>
-            <column name="domaine_etude" type="VARCHAR(255)"/>
-            <column name="en_cour" type="BOOLEAN" defaultValueBoolean="false"/>
-            <column name="institution" type="VARCHAR(255)"/>
+            <column name="start_date" type="DATE"/>
+            <column name="end_date" type="DATE"/>
+            <column name="degree" type="VARCHAR(255)"/>
+            <column name="field_of_study" type="VARCHAR(255)"/>
+            <column name="is_current" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="institution_name" type="VARCHAR(255)"/>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
             <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
         </createTable>
@@ -246,15 +254,14 @@
                 <constraints nullable="false"/>
             </column>
             <column name="location" type="VARCHAR(255)" remarks="Location of the job"/>
-            <column name="date_debut" type="DATE">
+            <column name="start_date" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="date_fin" type="DATE"/>
+            <column name="end_date" type="DATE"/>
             <column name="description" type="TEXT"/>
             <column name="is_current" type="BOOLEAN" defaultValueBoolean="false"/>
-            <column name="entreprise" type="VARCHAR(255)"/>
             <column name="technologies" type="VARCHAR(500)"/>
-            <column name="type_contract" type="VARCHAR(50)"/>
+            <column name="contract_type" type="VARCHAR(50)"/>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"/>
             <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
         </createTable>

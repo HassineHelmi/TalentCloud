@@ -25,19 +25,19 @@ public class Skills {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "programming_language")
-    private String programmingLanguage;
+    @Column(name = "programming_languages")
+    private String programmingLanguages;
     @Column(name = "soft_skills")
     private String softSkills;
-    @Column(name = "technical_skill")
+    @Column(name = "technical_skills")
     private String technicalSkill;
     @Column(name = "tools_and_technologies")
     private String toolsAndTechnologies;
 
-    @Column(name = "custom_skill")
-    private String customSkill;
+    @Column(name = "custom_skills")
+    private String customSkills;
 
-    @ManyToOne(fetch = FetchType.LAZY) // LAZY is generally good practice for ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id")
     @JsonBackReference(value="candidate-skills") // Ensure this value matches JsonManagedReference in Candidate
     private Candidate candidate;
@@ -45,12 +45,12 @@ public class Skills {
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
-    private LocalDateTime updatedAt;
+    private LocalDateTime updated_at;
 
     @Override
     public final boolean equals(Object o) {
@@ -72,15 +72,15 @@ public class Skills {
     public String toString() {
         return "Skills{" +
                 "id=" + id +
-                ", programmingLanguage='" + programmingLanguage + '\'' +
+                ", programmingLanguage='" + programmingLanguages + '\'' +
                 ", softSkills='" + softSkills + '\'' +
                 ", technicalSkill='" + technicalSkill + '\'' +
                 ", toolsAndTechnologies='" + toolsAndTechnologies + '\'' +
-                ", customSkill='" + customSkill + '\'' +
+                ", customSkill='" + customSkills + '\'' +
                 // Avoid recursion by only printing the candidate's ID if needed
                 (candidate != null ? ", candidate_id=" + candidate.getId() : "") +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", createdAt=" + created_at +
+                ", updatedAt=" + updated_at +
                 '}';
     }
 }

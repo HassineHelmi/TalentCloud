@@ -1,5 +1,6 @@
 package com.talentcloud.profile.iservice;
 
+import com.talentcloud.profile.dto.CandidatePublicProfileDto;
 import com.talentcloud.profile.dto.UpdateCandidateDto;
 import com.talentcloud.profile.exception.CandidateNotFoundException;
 import com.talentcloud.profile.model.Candidate;
@@ -14,5 +15,6 @@ public interface IServiceCandidate {
         Optional<Candidate> getCandidateById(Long candidateId);
         List<Candidate> getAllCandidates();
         Optional<Candidate> getCandidateProfileByProfileUserId(Long profileUserId);
-
+        List<CandidatePublicProfileDto> getAllCandidatesAsPublicProfile();
+        Optional<CandidatePublicProfileDto> getCandidateByIdAsPublicProfile(Long candidateId);
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EducationService implements IServiceEducation {
@@ -28,8 +27,8 @@ public class EducationService implements IServiceEducation {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new IllegalArgumentException("Candidate not found with ID: " + candidateId));
         education.setCandidate(candidate);
-        education.setCreatedAt(LocalDateTime.now());
-        education.setUpdatedAt(LocalDateTime.now()); // Set updated_at on creation as well
+        education.setCreated_at(LocalDateTime.now());
+        education.setUpdated_at(LocalDateTime.now()); // Set updated_at on creation as well
 
         return educationRepository.save(education);
     }
@@ -46,16 +45,22 @@ public class EducationService implements IServiceEducation {
     public Education editEducation(Long educationId, UpdateEducationDto dto) {
         Education existingEducation = educationRepository.findById(educationId)
                 .orElseThrow(() -> new IllegalArgumentException("Education not found with ID: " + educationId));
-        if (dto.getInstitution() != null) existingEducation.setInstitution(dto.getInstitution());
-        if (dto.getDiplome() != null) existingEducation.setDiplome(dto.getDiplome());
-        if (dto.getDomaineEtude() != null) existingEducation.setDomaineEtude(dto.getDomaineEtude());
-        if (dto.getDateDebut() != null) existingEducation.setDateDebut(dto.getDateDebut());
-        if (dto.getDateFin() != null) existingEducation.setDateFin(dto.getDateFin());
-        // Removed if (dto.getMoyenne() != null) existingEducation.setMoyenne(dto.getMoyenne());
-        if (dto.getEnCour() != null) existingEducation.setEnCour(dto.getEnCour()); // Updated field
-
-        existingEducation.setUpdatedAt(LocalDateTime.now());
+        if (dto.getInstitutionName() != null) existingEducation.setInstitutionName(dto.getInstitutionName());
+        if (dto.getDegree() != null) existingEducation.setDegree(dto.getDegree());
+        if (dto.getFieldOfStudy() != null) existingEducation.setFieldOfStudy(dto.getFieldOfStudy());
+        if (dto.getStartDate() != null) existingEducation.setStartDate(dto.getStartDate());
+        if (dto.getEndDate() != null) existingEducation.setEndDate(dto.getEndDate());
+        if (dto.getIsCurrent() != null) existingEducation.setIsCurrent(dto.getIsCurrent());
+        existingEducation.setUpdated_at(LocalDateTime.now());
 
         return educationRepository.save(existingEducation);
     }
+
+
+    @Override
+    public List<Education> getAllEducationByCandidateId(Long candidateId) {
+        return educationRepository.findByCandidate_id(candidateId);
+    }
+
+
 }

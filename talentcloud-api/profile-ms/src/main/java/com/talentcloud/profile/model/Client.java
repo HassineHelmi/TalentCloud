@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,7 +19,7 @@ import org.hibernate.proxy.HibernateProxy; // For robust equals/hashCode
 
 @Entity
 @Table(name = "clients")
-@Data // Includes @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -26,35 +27,25 @@ public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Maps to 'id' (PK) in 'clients' table
+    private Long id;
 
     @Column(name = "profile_id", unique = true, nullable = false)
-    private Long profileUserId; // Maps to 'profile_id' (FK to profiles.id)
+    private Long profileUserId;
 
     @NotBlank(message = "Company name is required")
-    @Column(name = "company_name", nullable = false) // Assuming company_name cannot be null based on schema
+    @Column(name = "company_name", nullable = false)
     private String companyName;
 
     @Column(name = "industry")
     private String industry;
 
-    @Column(name = "address")
-    private String address;
-
     @Column(name = "country")
     private String country;
-
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
-    @Column(name = "email") // Company's contact email
-    @Email // Optional: if this email should be validated
-    private String email;
 
     @Column(name = "website")
     private String website;
 
-    @Column(name = "linked_in_url")
+    @Column(name = "linkedin_url")
     private String linkedInUrl;
 
     @Column(name = "company_description", columnDefinition = "TEXT")
@@ -70,8 +61,8 @@ public class Client {
     @Column(name = "updated_at", insertable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "blocked", nullable = false) // Assuming blocked has a default and cannot be null
-    private boolean blocked = false; // Default value
+    @Column(name = "blocked", nullable = false)
+    private boolean blocked = false;
 
     // Consider overriding equals and hashCode for JPA entities like in Candidate for robustness
     @Override

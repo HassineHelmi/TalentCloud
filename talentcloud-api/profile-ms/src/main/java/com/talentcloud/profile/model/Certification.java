@@ -1,13 +1,13 @@
 package com.talentcloud.profile.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -21,27 +21,27 @@ public class Certification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nom;
-    private String organisme;
-    private LocalDate dateObtention;
-    // Removed private LocalDate datevalidite;
+
+    private String name;
+    private String organization;
+
+    @Column(name = "obtained_date")
+    private LocalDate obtainedDate;
 
     @URL(message = "Veuillez fournir une URL valide pour la certification")
-    @Column(name = "certification_url") // Renamed to match schema
+    @Column(name = "certification_url", columnDefinition = "TEXT")
     private String certificationUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "candidate_id")
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "candidate_id", nullable = false)
+    @JsonBackReference(value = "candidate-certifications")
     private Candidate candidate;
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime created_at;
 
     @LastModifiedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    @Column(insertable = false)
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updated_at;
 }

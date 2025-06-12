@@ -20,7 +20,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-// @Data
 @EntityListeners(AuditingEntityListener.class)
 public class Candidate {
 
@@ -30,26 +29,26 @@ public class Candidate {
 
     @Column(name = "profile_id", unique = true, nullable = false)
     private Long profileUserId;
+    @Column(name = "resume_url", columnDefinition = "TEXT")
+    private String resumeUrl;
 
-    private String resume_url;
-
-    @Column(columnDefinition = "TEXT")
-    private String jobPreference;
+    @Column( name = "job_preferences", columnDefinition = "TEXT")
+    private String jobPreferences;
 
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "visibility_setting")
-    private VisibilitySettings visibilitySetting;
+    @Column(name = "visibilitySettings")
+    private VisibilitySettings visibilitySettings;
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
-    private LocalDateTime updatedAt;
+    private LocalDateTime updated_at;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER) // Explicit EAGER is fine if EntityGraph is also used
     @JsonManagedReference(value="candidate-educations") // Unique value for JsonManagedReference if multiple collections of same type on other end
@@ -82,10 +81,7 @@ public class Candidate {
 
     @Override
     public final int hashCode() {
-        // return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-        // A common pattern for JPA entities:
         return Objects.hash(id); // Use ID for hash if available, otherwise rely on class hash for transient entities (though super.hashCode() is safer for transient)
-        // For persisted entities, Objects.hash(id) is fine.
     }
 
     @Override
@@ -93,11 +89,11 @@ public class Candidate {
         return "Candidate{" +
                 "id=" + id +
                 ", profileUserId=" + profileUserId +
-                ", resume_url='" + resume_url + '\'' +
-                ", jobPreference='" + jobPreference + '\'' +
-                ", visibilitySetting=" + visibilitySetting +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", resumeUrl='" + resumeUrl + '\'' +
+                ", jobPreferences='" + jobPreferences + '\'' +
+                ", visibilitySettings=" + visibilitySettings+
+                ", createdAt=" + created_at +
+                ", updatedAt=" + updated_at +
                 ", educationsCount=" + (educations != null ? educations.size() : "null") +
                 ", experiencesCount=" + (experiences != null ? experiences.size() : "null") +
                 ", certificationsCount=" + (certifications != null ? certifications.size() : "null") +

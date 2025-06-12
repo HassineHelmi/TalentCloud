@@ -1,5 +1,6 @@
 package com.talentcloud.profile.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "experience") // Table name in schema is 'experience' (singular)
+@Table(name = "experience")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,36 +35,33 @@ public class Experience {
     private String jobTitle;
 
     @NotBlank(message = "Le nom de l'entreprise est obligatoire.")
-    @Column(name = "company_name") // Renamed to match schema
+    @Column(name = "company_name") // Renamed to match schema's `entreprise` (for website)
     private String companyName;
 
     @NotNull(message = "La date de début est obligatoire.")
-    @Column(name = "date_debut") // Renamed to match schema
-    private LocalDate dateDebut;
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
-    @Column(name = "date_fin") // Renamed to match schema
-    private LocalDate dateFin;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @Column(length = 1000)
     private String description;
 
-    @Column(name = "location") // Renamed to match schema
+    @Column(name = "location")
     private String location;
 
     @NotNull(message = "Le champ 'enCours' doit être spécifié.")
-    @Column(name = "is_current") // Renamed to match schema
-    private Boolean isCurrent; // Renamed to match schema
+    @Column(name = "is_current")
+    private Boolean isCurrent;
 
-    @URL(message = "Veuillez fournir une URL valide pour le site de l'entreprise.")
-    @Column(name = "entreprise") // Renamed to match schema's `entreprise` (for website)
-    private String entreprise;
 
     @Pattern(
             regexp = "^(CDI|CDD|Freelance|Stage|Alternance)?$",
             message = "Type de contrat invalide. Les valeurs valides sont : CDI, CDD, Freelance, Stage, Alternance."
     )
-    @Column(name = "type_contract") // Renamed to match schema
-    private String typeContract;
+    @Column(name = "contract_type")
+    private String contractType;
 
     @Column(length = 1000)
     private String technologies;
@@ -71,16 +69,16 @@ public class Experience {
     // Relation to Candidate
     @ManyToOne
     @JoinColumn(name = "candidate_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference(value="candidate-experiences")
     private Candidate candidate;
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
-    private LocalDateTime updatedAt;
+    private LocalDateTime updated_at;
 }

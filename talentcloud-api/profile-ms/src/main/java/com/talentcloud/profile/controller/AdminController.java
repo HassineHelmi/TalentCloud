@@ -1,88 +1,81 @@
 package com.talentcloud.profile.controller;
 
-import com.talentcloud.profile.dto.ErrorResponse; // Assuming you have this
 import com.talentcloud.profile.iservice.IServiceAdmin;
+import com.talentcloud.profile.iservice.IServiceCandidate;
+import com.talentcloud.profile.iservice.IServiceClient;
 import com.talentcloud.profile.model.Admin;
-import com.talentcloud.profile.model.Profile;     // Import Profile
-import com.talentcloud.profile.service.ProfileService; // Import ProfileService
+import com.talentcloud.profile.model.Candidate;
+import com.talentcloud.profile.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal; // Import
-import org.springframework.security.oauth2.jwt.Jwt; // Import
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime; // For ErrorResponse
-import java.util.Optional;
+import java.util.List;
+
 
 @RestController
-@RequestMapping("/api/v1/admins")
+@RequestMapping("/api/v1/admin/manage")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class AdminController {
 
     private final IServiceAdmin adminService;
-    private final ProfileService profileService; // Inject ProfileService
+    private final IServiceClient clientService;
+    private final IServiceCandidate candidateService;
 
     @Autowired
-    public AdminController(IServiceAdmin adminService, ProfileService profileService) {
+    public AdminController(IServiceAdmin adminService, IServiceClient clientService, IServiceCandidate candidateService) {
         this.adminService = adminService;
-        this.profileService = profileService; // Initialize ProfileService
+        this.clientService = clientService;
+        this.candidateService = candidateService;
     }
 
-    @GetMapping("/me")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> getMyAdminProfile(@AuthenticationPrincipal Jwt jwt) { // Changed parameter
-        String jwtSub = jwt.getClaimAsString("sub");
-        // Assuming your ProfileService might use email, if not, you might not need it here
-        String email = jwt.getClaimAsString("email");
-        Profile userProfile = profileService.findOrCreateProfile(jwtSub, email); // Use ProfileService
-
-        if (userProfile == null || userProfile.getId() == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Unable to retrieve profile information.", "Server Error", LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value()));
+    // Admin Management
+    @PostMapping("/admins")
+    public ResponseEntity<?> createAdminProfileForUser(@RequestParam Long profileId) {
+        if (adminService.getAdminProfileByProfileUserId(profileId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Admin profile already exists for this user.");
         }
-
-        Optional<Admin> admin = adminService.getAdminProfileByProfileUserId(userProfile.getId());
-        if (admin.isPresent()) {
-            return ResponseEntity.ok(admin.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("Admin profile not found for this user.", "Not Found", LocalDateTime.now(), HttpStatus.NOT_FOUND.value()));
-        }
-    }
-
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    // RequestBody can be optional if Admin has no other fields than id and profileUserId
-    public ResponseEntity<?> createAdminProfile(@RequestBody(required = false) Admin adminRequestFromUser, @AuthenticationPrincipal Jwt jwt) { // Changed parameter
-        String jwtSub = jwt.getClaimAsString("sub");
-        String email = jwt.getClaimAsString("email");
-        Profile userProfile = profileService.findOrCreateProfile(jwtSub, email); // Use ProfileService
-        Long authenticatedProfileId = userProfile.getId();
-
-        if (authenticatedProfileId == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Unable to retrieve profile information for admin creation.", "Server Error", LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
-
-        // Check if an admin profile already exists for this user
-        if (adminService.getAdminProfileByProfileUserId(authenticatedProfileId).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ErrorResponse("Admin profile already exists for this user.", "Conflict", LocalDateTime.now(), HttpStatus.CONFLICT.value()));
-        }
-
         Admin newAdmin = new Admin();
-        newAdmin.setProfileUserId(authenticatedProfileId);
-        // If your Admin entity had other fields to be set from adminRequestFromUser, you'd map them here.
-        // Since it only has id and profileUserId, we primarily use the authenticatedProfileId.
+        newAdmin.setProfileUserId(profileId);
+        Admin createdAdmin = adminService.createAdminProfile(newAdmin);
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    }
 
-        try {
-            Admin createdAdmin = adminService.createAdminProfile(newAdmin);
-            return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-        } catch (Exception e) {
-            // Log the exception e
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Error creating admin profile: " + e.getMessage(), "Server Error", LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
+    // Client Management
+    @GetMapping("/clients")
+    public ResponseEntity<List<Client>> getAllClients() {
+        return ResponseEntity.ok(clientService.getAllClients());
+    }
+
+    @GetMapping("/clients/{clientId}")
+    public ResponseEntity<Client> getClientById(@PathVariable Long clientId) {
+        return clientService.getClientById(clientId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/clients/{clientId}/block")
+    public ResponseEntity<Client> blockClientProfile(@PathVariable Long clientId) {
+        return ResponseEntity.ok(clientService.blockProfile(clientId));
+    }
+
+    // Candidate Management
+    @GetMapping("/candidates")
+    public ResponseEntity<List<Candidate>> getAllCandidates() {
+        return ResponseEntity.ok(candidateService.getAllCandidates());
+    }
+
+    @GetMapping("/candidates/{candidateId}")
+    public ResponseEntity<Candidate> getCandidateById(@PathVariable Long candidateId) {
+        return candidateService.getCandidateById(candidateId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/candidates/{candidateId}/block")
+    public ResponseEntity<Candidate> blockCandidateProfile(@PathVariable Long candidateId) {
+        return ResponseEntity.ok(candidateService.blockProfile(candidateId));
     }
 }

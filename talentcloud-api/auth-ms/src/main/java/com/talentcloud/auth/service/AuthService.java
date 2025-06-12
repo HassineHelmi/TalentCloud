@@ -179,7 +179,9 @@ public class AuthService {
                                 user.setKeycloakId(keycloakUserId);
                                 user.setUsername(request.getUsername());
                                 user.setEmail(request.getEmail());
-                                user.setRole(request.getRole()); // Direct assignment now as RegisterRequest.role is Role enum
+                                user.setFirstName(request.getFirstName());
+                                user.setLastName(request.getLastName());
+                                user.setRole(request.getRole());
                                 return user;
                             })
                             .subscribeOn(Schedulers.boundedElastic())

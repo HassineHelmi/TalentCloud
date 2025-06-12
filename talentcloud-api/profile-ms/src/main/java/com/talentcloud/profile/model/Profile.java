@@ -17,5 +17,14 @@ public class Profile {
     private String authServiceUserId;
     @Column(unique = true, nullable = false)
     private String email;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "address")
+    private String address;
 
 }

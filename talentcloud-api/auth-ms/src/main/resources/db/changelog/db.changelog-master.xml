@@ -7,7 +7,8 @@
 
     <changeSet id="1" author="helmi">
         <createTable tableName="users">
-            <column name="user_id" type="BIGSERIAL"> <constraints primaryKey="true" nullable="false"/>
+            <column name="user_id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="username" type="VARCHAR(100)">
                 <constraints nullable="false" unique="true"/>
@@ -20,6 +21,17 @@
                 <constraints unique="true"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="helmi-add-names">
+        <addColumn tableName="users">
+            <column name="first_name" type="VARCHAR(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_name" type="VARCHAR(100)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

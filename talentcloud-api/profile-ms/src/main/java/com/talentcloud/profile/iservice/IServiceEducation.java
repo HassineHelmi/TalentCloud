@@ -9,6 +9,7 @@ public interface IServiceEducation {
     Education addEducation(Education education, Long candidateId);
     Education deleteEducation(Long educationId);
     Education editEducation(Long educationId, UpdateEducationDto dto);
+    List<Education> getAllEducationByCandidateId(Long candidateId);
 
 
 }

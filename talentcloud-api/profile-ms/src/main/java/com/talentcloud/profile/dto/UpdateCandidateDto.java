@@ -8,12 +8,9 @@ import lombok.Data;
 
 @Data
 public class UpdateCandidateDto {
-    private String resume_url;
-    private String jobPreference;
-    private String jobTitle;
+
+    private String resumeUrl;
+    private String jobPreferences;
     private VisibilitySettings visibilitySettings;
-    private Skills skills;
-    private Education education;
-    private Experience experience;
 
 }

@@ -35,8 +35,8 @@ public class SkillsService implements IServiceSkills {
         return candidateRepository.findById(candidateId)
                 .map(candidate -> {
                     skills.setCandidate(candidate);
-                    skills.setCreatedAt(LocalDateTime.now());
-                    skills.setUpdatedAt(LocalDateTime.now()); // Set updated_at on creation as well
+                    skills.setCreated_at(LocalDateTime.now());
+                    skills.setUpdated_at(LocalDateTime.now()); // Set updated_at on creation as well
                     return skillsRepository.save(skills);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Candidate not found with ID: " + candidateId));
@@ -47,14 +47,14 @@ public class SkillsService implements IServiceSkills {
         Skills existingSkills = skillsRepository.findById(skillsId)
                 .orElseThrow(() -> new IllegalArgumentException("Skills not found with id: " + skillsId));
         // Update the skills with data from the DTO
-        existingSkills.setProgrammingLanguage(updateSkillsDto.getProgrammingLanguage()); // Updated field
+        existingSkills.setProgrammingLanguages(updateSkillsDto.getProgrammingLanguage()); // Updated field
         existingSkills.setSoftSkills(updateSkillsDto.getSoftSkills());
         existingSkills.setTechnicalSkill(updateSkillsDto.getTechnicalSkill()); // Updated field
         existingSkills.setToolsAndTechnologies(updateSkillsDto.getToolsAndTechnologies());
-        existingSkills.setCustomSkill(updateSkillsDto.getCustomSkill()); // Updated field
+        existingSkills.setCustomSkills(updateSkillsDto.getCustomSkill()); // Updated field
 
         // Set the updatedAt timestamp to the current time
-        existingSkills.setUpdatedAt(LocalDateTime.now());
+        existingSkills.setUpdated_at(LocalDateTime.now());
         // Save and return the updated skills
         return skillsRepository.save(existingSkills);
     }

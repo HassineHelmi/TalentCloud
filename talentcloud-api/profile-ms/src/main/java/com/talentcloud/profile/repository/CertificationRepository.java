@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface CertificationRepository extends JpaRepository<Certification, Long> {
 
-    // Corrected method to find by candidate's relationship, not by ID
-    List<Certification> findByCandidate(Candidate candidate);  // Correct query to find certifications for a specific candidate}
+    List<Certification> findByCandidate(Candidate candidate);
 }

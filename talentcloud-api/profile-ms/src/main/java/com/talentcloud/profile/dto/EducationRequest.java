@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 public record EducationRequest(
         String institution,
-        String diplome,
-        String domaineEtude,
-        LocalDate dateDebut,
-        LocalDate dateFin,
+        String degree,
+        String fieldOfStudy,
+        LocalDate startDate,
+        LocalDate endDate,
 
-        Boolean enCour // Renamed
+        Boolean isCurrent // Renamed
 ) {}

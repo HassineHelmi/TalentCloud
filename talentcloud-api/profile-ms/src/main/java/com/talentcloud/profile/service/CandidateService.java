@@ -1,25 +1,94 @@
 package com.talentcloud.profile.service;
+
+import com.talentcloud.profile.dto.CandidatePublicProfileDto;
 import com.talentcloud.profile.dto.UpdateCandidateDto;
 import com.talentcloud.profile.exception.CandidateNotFoundException;
 import com.talentcloud.profile.iservice.IServiceCandidate;
 import com.talentcloud.profile.model.Candidate;
+import com.talentcloud.profile.model.Profile;
 import com.talentcloud.profile.repository.CandidateRepository;
+import com.talentcloud.profile.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CandidateService implements IServiceCandidate {
 
     private final CandidateRepository candidateRepository;
+    private final ProfileRepository profileRepository;
 
     @Autowired
-    public CandidateService(CandidateRepository candidateRepository) {
+    public CandidateService(CandidateRepository candidateRepository, ProfileRepository profileRepository) {
         this.candidateRepository = candidateRepository;
+        this.profileRepository = profileRepository;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CandidatePublicProfileDto> getAllCandidatesAsPublicProfile() {
+        List<Candidate> candidates = candidateRepository.findAll();
+        if (candidates.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> profileIds = candidates.stream()
+                .map(Candidate::getProfileUserId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        Map<Long, Profile> profileMap = profileRepository.findAllById(profileIds).stream()
+                .collect(Collectors.toMap(Profile::getId, profile -> profile));
+
+        return candidates.stream()
+                .map(candidate -> convertToPublicProfileDto(candidate, profileMap.get(candidate.getProfileUserId())))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<CandidatePublicProfileDto> getCandidateByIdAsPublicProfile(Long candidateId) {
+        return candidateRepository.findById(candidateId).map(candidate -> {
+            Profile profile = profileRepository.findById(candidate.getProfileUserId()).orElse(null);
+            return convertToPublicProfileDto(candidate, profile);
+        });
+    }
+
+    private CandidatePublicProfileDto convertToPublicProfileDto(Candidate candidate, Profile profile) {
+        CandidatePublicProfileDto dto = new CandidatePublicProfileDto();
+
+        dto.setId(candidate.getId());
+        dto.setResumeUrl(candidate.getResumeUrl());
+        dto.setJobPreferences(candidate.getJobPreferences());
+        dto.setVisibilitySettings(candidate.getVisibilitySettings());
+        dto.setBlocked(candidate.isBlocked());
+
+        // Convert Set to List for each collection
+        if (candidate.getEducations() != null) {
+            dto.setEducations(new ArrayList<>(candidate.getEducations()));
+        }
+        if (candidate.getExperiences() != null) {
+            dto.setExperiences(new ArrayList<>(candidate.getExperiences()));
+        }
+        if (candidate.getCertifications() != null) {
+            dto.setCertifications(new ArrayList<>(candidate.getCertifications()));
+        }
+        if (candidate.getSkills() != null) {
+            dto.setSkills(new ArrayList<>(candidate.getSkills()));
+        }
+
+        if (profile != null) {
+            dto.setFirstName(profile.getFirstName());
+            dto.setLastName(profile.getLastName());
+            dto.setEmail(profile.getEmail());
+            dto.setPhoneNumber(profile.getPhoneNumber());
+            dto.setAddress(profile.getAddress());
+        }
+
+        return dto;
     }
 
     @Override
@@ -61,15 +130,14 @@ public class CandidateService implements IServiceCandidate {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with id " + candidateId));
 
-        // Update fields if DTO provides new values
-        if (dto.getResume_url() != null) {
-            existingCandidate.setResume_url(dto.getResume_url());
+        if (dto.getResumeUrl() != null) {
+            existingCandidate.setResumeUrl(dto.getResumeUrl());
         }
-        if (dto.getJobPreference() != null) {
-            existingCandidate.setJobPreference(dto.getJobPreference());
+        if (dto.getJobPreferences() != null) {
+            existingCandidate.setJobPreferences(dto.getJobPreferences());
         }
         if (dto.getVisibilitySettings() != null) {
-            existingCandidate.setVisibilitySetting(dto.getVisibilitySettings());
+            existingCandidate.setVisibilitySettings(dto.getVisibilitySettings());
         }
 
         return candidateRepository.save(existingCandidate);

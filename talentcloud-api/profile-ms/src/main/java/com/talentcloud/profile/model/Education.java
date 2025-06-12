@@ -1,5 +1,6 @@
 package com.talentcloud.profile.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -20,29 +21,30 @@ public class Education {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String institution;
-    private String diplome;
-    @Column(name = "domaine_etude") // Renamed to match schema
-    private String domaineEtude;
-    @Column(name = "date_debut") // Renamed to match schema
-    private LocalDate dateDebut;
-    @Column(name = "date_fin") // Renamed to match schema
-    private LocalDate dateFin;
-    // Removed private Double moyenne;
-    @Column(name = "en_cour") // Renamed to match schema
-    private Boolean enCour; // Renamed to match schema
+    @Column(name = "institution_name")
+    private String institutionName;
+    @Column(name = "degree")
+    private String degree;
+    @Column(name = "field_of_study")
+    private String fieldOfStudy;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    @Column(name = "end_date")
+    private LocalDate EndDate;
+    @Column(name = "is_current")
+    private Boolean isCurrent;
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
-    private LocalDateTime updatedAt;
+    private LocalDateTime updated_at;
 
     @ManyToOne
     @JoinColumn(name = "candidate_id")
-    @JsonIgnore
+    @JsonBackReference(value = "candidate-educations") // Unique value for JsonBackReference if multiple collections of same type on other end
     private Candidate candidate;
 }

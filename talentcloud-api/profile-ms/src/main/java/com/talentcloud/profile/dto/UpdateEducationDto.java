@@ -6,10 +6,10 @@ import java.time.LocalDate;
 @Data
 public class UpdateEducationDto {
 
-    private String institution;
-    private String diplome;
-    private String domaineEtude;
-    private LocalDate dateDebut;
-    private LocalDate dateFin;
-    private Boolean enCour;
+    private String institutionName;
+    private String degree;
+    private String fieldOfStudy;
+    private LocalDate StartDate;
+    private LocalDate EndDate;
+    private Boolean isCurrent;
 }
