@@ -2,8 +2,17 @@ package com.talentcloud.profile.repository;
 
 import com.talentcloud.profile.model.Experience;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
 public interface ExperienceRepository extends JpaRepository<Experience, Long> {
-    List<Experience> findByCandidate_Id(Long candidateId);
+
+    List<Experience> findByCandidateId(Long candidateId);
+
+    @Modifying
+    @Query("DELETE FROM Experience e WHERE e.id = :experienceId")
+    void deleteExperienceById(@Param("experienceId") Long experienceId);
 }

@@ -9,7 +9,7 @@ public class UpdateEducationDto {
     private String institutionName;
     private String degree;
     private String fieldOfStudy;
-    private LocalDate StartDate;
-    private LocalDate EndDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Boolean isCurrent;
 }

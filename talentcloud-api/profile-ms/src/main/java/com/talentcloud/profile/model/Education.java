@@ -1,12 +1,13 @@
 package com.talentcloud.profile.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,35 +17,41 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Education {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "institution_name")
     private String institutionName;
+
     @Column(name = "degree")
     private String degree;
+
     @Column(name = "field_of_study")
     private String fieldOfStudy;
+
     @Column(name = "start_date")
     private LocalDate startDate;
+
     @Column(name = "end_date")
-    private LocalDate EndDate;
+    private LocalDate endDate;
+
     @Column(name = "is_current")
     private Boolean isCurrent;
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
     private LocalDateTime created_at;
+
     @LastModifiedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
     private LocalDateTime updated_at;
 
-    @ManyToOne
-    @JoinColumn(name = "candidate_id")
-    @JsonBackReference(value = "candidate-educations") // Unique value for JsonBackReference if multiple collections of same type on other end
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "candidate_id", nullable = false)
+    @JsonBackReference(value = "candidate-educations")
     private Candidate candidate;
 }

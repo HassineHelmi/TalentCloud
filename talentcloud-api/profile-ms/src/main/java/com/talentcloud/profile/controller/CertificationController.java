@@ -40,7 +40,7 @@ public class CertificationController {
     public ResponseEntity<Certification> addCertification(@PathVariable Long candidateId, @RequestBody @Valid Certification certification) {
         Certification savedCertification = certificationService.addCertification(certification, candidateId);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCertification);
-    }
+    }   
 
 
     @PutMapping("/{certificationId}")

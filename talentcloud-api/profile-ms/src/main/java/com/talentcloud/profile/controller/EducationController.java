@@ -23,37 +23,37 @@ public class EducationController {
 
     @PostMapping("/create/{candidateId}")
     public ResponseEntity<Education> addEducation(
-            @PathVariable Long candidateId,
+            @PathVariable("candidateId") Long candidateId,
             @RequestBody @Valid EducationRequest request) {
 
         Education education = new Education();
-        education.setInstitutionName(request.institution());
+        education.setInstitutionName(request.institutionName());
         education.setDegree(request.degree());
         education.setFieldOfStudy(request.fieldOfStudy());
         education.setStartDate(request.startDate());
         education.setEndDate(request.endDate());
         education.setIsCurrent(request.isCurrent());
 
-        Education saved = educationService.addEducation(education, candidateId);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        Education savedEducation = educationService.addEducation(education, candidateId);
+        return new ResponseEntity<>(savedEducation, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{educationId}")
+    @PutMapping("/{educationId}/update")
     public ResponseEntity<Education> editEducation(
-            @PathVariable Long educationId,
-            @RequestBody UpdateEducationDto dto) {
+            @PathVariable("educationId") Long educationId,
+            @RequestBody @Valid UpdateEducationDto dto) {
         Education updatedEducation = educationService.editEducation(educationId, dto);
         return ResponseEntity.ok(updatedEducation);
     }
 
-    @DeleteMapping("/{educationId}")
-    public ResponseEntity<Void> deleteEducation(@PathVariable Long educationId) {
+    @DeleteMapping("/{educationId}/delete")
+    public ResponseEntity<Void> deleteEducation(@PathVariable("educationId") Long educationId) {
         educationService.deleteEducation(educationId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/candidate/{candidateId}")
-    public ResponseEntity<List<Education>> getEducationsByCandidateId(@PathVariable Long candidateId) {
+    public ResponseEntity<List<Education>> getEducationsByCandidateId(@PathVariable("candidateId") Long candidateId) {
         List<Education> educations = educationService.getAllEducationByCandidateId(candidateId);
         return ResponseEntity.ok(educations);
     }

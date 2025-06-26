@@ -34,7 +34,7 @@ public class ClientController {
         this.candidateService = candidateService;
         this.profileService = profileService;
     }
-
+    
     @PostMapping("/me")
     public ResponseEntity<?> createMyClientProfile(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid ClientProfileDto dto) {
         Profile userProfile = profileService.findOrCreateProfile(jwt.getClaimAsString("sub"), jwt.getClaimAsString("email"), dto.getFirstName(), dto.getLastName());

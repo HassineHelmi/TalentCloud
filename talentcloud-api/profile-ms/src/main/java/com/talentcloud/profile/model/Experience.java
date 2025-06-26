@@ -2,12 +2,10 @@ package com.talentcloud.profile.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.URL;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,11 +29,11 @@ public class Experience {
     private Long id;
 
     @NotBlank(message = "Le titre du poste est obligatoire.")
-    @Column(name = "job_title") // Renamed to match schema
+    @Column(name = "job_title")
     private String jobTitle;
 
     @NotBlank(message = "Le nom de l'entreprise est obligatoire.")
-    @Column(name = "company_name") // Renamed to match schema's `entreprise` (for website)
+    @Column(name = "company_name")
     private String companyName;
 
     @NotNull(message = "La date de début est obligatoire.")
@@ -55,10 +53,9 @@ public class Experience {
     @Column(name = "is_current")
     private Boolean isCurrent;
 
-
     @Pattern(
-            regexp = "^(CDI|CDD|Freelance|Stage|Alternance)?$",
-            message = "Type de contrat invalide. Les valeurs valides sont : CDI, CDD, Freelance, Stage, Alternance."
+            regexp = "^(CDI|CDD|Freelance|Internship)?$",
+            message = "Type de contrat invalide. Les valeurs valides sont : CDI, CDD, Freelance, Internship."
     )
     @Column(name = "contract_type")
     private String contractType;
@@ -66,19 +63,16 @@ public class Experience {
     @Column(length = 1000)
     private String technologies;
 
-    // Relation to Candidate
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)
     @JsonBackReference(value="candidate-experiences")
     private Candidate candidate;
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
     private LocalDateTime created_at;
 
     @LastModifiedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
     private LocalDateTime updated_at;
 }
