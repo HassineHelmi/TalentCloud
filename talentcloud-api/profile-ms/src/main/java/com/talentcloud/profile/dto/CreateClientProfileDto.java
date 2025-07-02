@@ -1,26 +1,15 @@
 package com.talentcloud.profile.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
+// This DTO is used specifically for creating a new client profile.
+// It only contains the professional details.
 @Data
-public class ClientProfileDto {
+public class CreateClientProfileDto {
 
-    // Profile-related fields
-    private String firstName;
-    private String lastName;
-    private String address;
-
-    @NotBlank(message = "Phone number is required")
-    private String phoneNumber;
-
-    @Email(message = "Please provide a valid email address")
-    private String email;
-
-    // Client-specific fields
-//    @NotBlank(message = "Company name is required")
+    @NotBlank(message = "Company name is required")
     private String companyName;
 
     private String industry;

@@ -85,15 +85,7 @@ public class SecurityConfig {
     @Bean
     public Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        // If you need to customize how roles/authorities are extracted from the JWT,
-        // you would configure the jwtAuthenticationConverter here.
-        // For example, to read roles from "realm_access.roles":
-        //
-        // JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        // grantedAuthoritiesConverter.setAuthoritiesClaimName("realm_access.roles"); // Or whatever your roles claim is
-        // grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // Optional: adds "ROLE_" prefix
-        // jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-        return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
+       return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
     }
 
     // Bean to decode and validate JWTs using the JWK Set URI from Keycloak

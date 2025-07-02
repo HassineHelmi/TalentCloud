@@ -1,6 +1,6 @@
 package com.talentcloud.profile.service;
 
-import com.talentcloud.profile.dto.ClientProfileDto;
+import com.talentcloud.profile.dto.UpdateClientProfessionalDto;
 import com.talentcloud.profile.exception.ClientNotFoundException;
 import com.talentcloud.profile.iservice.IServiceClient;
 import com.talentcloud.profile.model.Client;
@@ -21,12 +21,12 @@ import java.util.Optional;
 public class ClientService implements IServiceClient {
 
     private final ClientRepository clientRepository;
-    private final ProfileRepository profileRepository; // + Added
+    private final ProfileRepository profileRepository;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository, ProfileRepository profileRepository) { // + Modified
+    public ClientService(ClientRepository clientRepository, ProfileRepository profileRepository) {
         this.clientRepository = clientRepository;
-        this.profileRepository = profileRepository; // + Added
+        this.profileRepository = profileRepository;
     }
 
     @Override
@@ -44,24 +44,15 @@ public class ClientService implements IServiceClient {
 
     @Override
     @Transactional
-    public Client updateClientAndProfile(Long clientId, ClientProfileDto dto) {
-        // 1. Find the client
-        Client existingClient = clientRepository.findById(clientId)
-                .orElseThrow(() -> new ClientNotFoundException("Client not found with id " + clientId));
+    public Client updateClientProfessionalDetails(String authServiceUserId, UpdateClientProfessionalDto dto) {
+        Profile profile = profileRepository.findByAuthServiceUserId(authServiceUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User profile not found."));
 
-        // 2. Find the associated profile
-        Profile profile = profileRepository.findById(existingClient.getProfileUserId())
-                .orElseThrow(() -> new EntityNotFoundException("Associated profile not found for client id " + clientId));
+        // Then, find the specific client profile using the profile's ID
+        Client existingClient = clientRepository.findByProfileUserId(profile.getId())
+                .orElseThrow(() -> new ClientNotFoundException("Client professional profile not found for this user."));
 
-        // 3. Update Profile fields if they are provided
-        if (dto.getFirstName() != null) profile.setFirstName(dto.getFirstName());
-        if (dto.getLastName() != null) profile.setLastName(dto.getLastName());
-        if (dto.getAddress() != null) profile.setAddress(dto.getAddress());
-        if (dto.getPhoneNumber() != null) profile.setPhoneNumber(dto.getPhoneNumber());
-        if (dto.getEmail() != null) profile.setEmail(dto.getEmail()); // Assumes email can be updated here
-        profileRepository.save(profile);
-
-        // 4. Update Client fields if they are provided
+        // Now, update ONLY the professional (Client entity) fields
         if (dto.getCompanyName() != null) existingClient.setCompanyName(dto.getCompanyName());
         if (dto.getIndustry() != null) existingClient.setIndustry(dto.getIndustry());
         if (dto.getCountry() != null) existingClient.setCountry(dto.getCountry());
