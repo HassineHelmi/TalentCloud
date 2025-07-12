@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20250610-1-replace-job-preferences-with-job-title" author="backend-ai">
+        <addColumn tableName="candidates">
+            <column name="job_title" type="VARCHAR(255)"/>
+        </addColumn>
+        <update tableName="candidates">
+            <column name="job_title" valueComputed="job_preferences"/>
+        </update>
+        <dropColumn tableName="candidates" columnName="job_preferences"/>
+        <comment>Replaces job_preferences with job_title in candidates table.</comment>
+    </changeSet>
+</databaseChangeLog>

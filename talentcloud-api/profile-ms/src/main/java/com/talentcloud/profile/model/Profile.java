@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
+
 @Entity
 @Table(name = "profiles")
 @Data
@@ -26,5 +28,7 @@ public class Profile {
 
     @Column(name = "address")
     private String address;
+    @Column(name = "linkedin_url")
+    private String linkedInUrl;
 
 }

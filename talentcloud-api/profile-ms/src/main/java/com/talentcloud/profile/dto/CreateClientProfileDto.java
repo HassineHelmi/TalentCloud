@@ -4,8 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
-// This DTO is used specifically for creating a new client profile.
-// It only contains the professional details.
+
 @Data
 public class CreateClientProfileDto {
 

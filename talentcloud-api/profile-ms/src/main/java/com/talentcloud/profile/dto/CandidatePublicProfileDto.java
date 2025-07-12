@@ -17,7 +17,8 @@ public class CandidatePublicProfileDto {
     private String phoneNumber;
     private String address;
     private String resumeUrl;
-    private String jobPreferences;
+    private String jobTitle;
+    private String jobCategory;
     private VisibilitySettings visibilitySettings;
     private List<Education> educations;
     private List<Experience> experiences;

@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 public class CreateCandidateDto {
     private String resumeUrl;
-    private String jobPreferences;
+    private String jobTitle;
+    private String jobCategory;
 
     @NotNull(message = "Visibility settings must be provided")
     private VisibilitySettings visibilitySettings;

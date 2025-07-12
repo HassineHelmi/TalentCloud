@@ -1,8 +1,5 @@
 package com.talentcloud.profile.dto;
 
-import com.talentcloud.profile.model.Education;
-import com.talentcloud.profile.model.Experience;
-import com.talentcloud.profile.model.Skills;
 import com.talentcloud.profile.model.VisibilitySettings;
 import lombok.Data;
 
@@ -10,7 +7,8 @@ import lombok.Data;
 public class UpdateCandidateDto {
 
     private String resumeUrl;
-    private String jobPreferences;
+    private String jobTitle;
+    private String jobCategory;
     private VisibilitySettings visibilitySettings;
 
 }

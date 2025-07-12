@@ -32,8 +32,10 @@ public class Candidate {
     @Column(name = "resume_url", columnDefinition = "TEXT")
     private String resumeUrl;
 
-    @Column( name = "job_preferences", columnDefinition = "TEXT")
-    private String jobPreferences;
+    @Column(name = "job_title", columnDefinition = "TEXT")
+    private String jobTitle;
+    @Column(name = "job_category", columnDefinition = "TEXT")
+    private String jobCategory;
 
 
     @Enumerated(EnumType.STRING)
@@ -90,7 +92,8 @@ public class Candidate {
                 "id=" + id +
                 ", profileUserId=" + profileUserId +
                 ", resumeUrl='" + resumeUrl + '\'' +
-                ", jobPreferences='" + jobPreferences + '\'' +
+                ", jobTitle='" + jobTitle + '\'' +
+                ", jobCategory='" + jobCategory + '\'' +
                 ", visibilitySettings=" + visibilitySettings+
                 ", createdAt=" + created_at +
                 ", updatedAt=" + updated_at +

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="20240610-1-add-linkedin-url-to-profiles" author="backend-ai">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="profiles" columnName="linkedin_url"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="profiles">
+            <column name="linkedin_url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20240610-2-update-candidates-job-fields" author="backend-ai">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="candidates" columnName="job_category"/>
+            </not>
+            <columnExists tableName="candidates" columnName="job_preferences"/>
+        </preConditions>
+        <addColumn tableName="candidates">
+            <column name="job_category" type="VARCHAR(255)"/>
+        </addColumn>
+        <dropColumn tableName="candidates" columnName="job_preferences"/>
+    </changeSet>
+</databaseChangeLog>

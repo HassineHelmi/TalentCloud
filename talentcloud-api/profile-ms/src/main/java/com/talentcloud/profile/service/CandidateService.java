@@ -62,7 +62,8 @@ public class CandidateService implements IServiceCandidate {
 
         dto.setId(candidate.getId());
         dto.setResumeUrl(candidate.getResumeUrl());
-        dto.setJobPreferences(candidate.getJobPreferences());
+        dto.setJobTitle(candidate.getJobTitle());
+        dto.setJobCategory(candidate.getJobCategory());
         dto.setVisibilitySettings(candidate.getVisibilitySettings());
         dto.setBlocked(candidate.isBlocked());
 
@@ -133,8 +134,11 @@ public class CandidateService implements IServiceCandidate {
         if (dto.getResumeUrl() != null) {
             existingCandidate.setResumeUrl(dto.getResumeUrl());
         }
-        if (dto.getJobPreferences() != null) {
-            existingCandidate.setJobPreferences(dto.getJobPreferences());
+        if (dto.getJobTitle() != null) {
+            existingCandidate.setJobTitle(dto.getJobTitle());
+        }
+        if (dto.getJobCategory() != null) {
+            existingCandidate.setJobCategory(dto.getJobCategory());
         }
         if (dto.getVisibilitySettings() != null) {
             existingCandidate.setVisibilitySettings(dto.getVisibilitySettings());
