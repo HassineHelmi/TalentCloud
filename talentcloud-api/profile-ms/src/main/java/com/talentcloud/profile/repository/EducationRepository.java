@@ -15,4 +15,8 @@ public interface EducationRepository extends JpaRepository<Education, Long> {
         @Modifying
         @Query("DELETE FROM Education e WHERE e.id = :educationId")
         void deleteEducationById(@Param("educationId") Long educationId);
+
+        @Modifying
+        @Query("DELETE FROM Education e WHERE e.candidate.id = :candidateId")
+        void deleteByCandidateId(@Param("candidateId") Long candidateId);
 }
