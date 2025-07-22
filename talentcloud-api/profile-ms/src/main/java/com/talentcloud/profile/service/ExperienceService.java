@@ -1,15 +1,15 @@
 package com.talentcloud.profile.service;
 
-
 import com.talentcloud.profile.dto.UpdateExperienceDto;
 import com.talentcloud.profile.iservice.IServiceExperience;
 import com.talentcloud.profile.model.Candidate;
 import com.talentcloud.profile.model.Experience;
 import com.talentcloud.profile.repository.CandidateRepository;
 import com.talentcloud.profile.repository.ExperienceRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,55 +25,51 @@ public class ExperienceService implements IServiceExperience {
     }
 
     @Override
+    @Transactional
     public Experience createExperience(Experience experience, Long candidateId) {
         Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new IllegalArgumentException("Candidate not found with id: " + candidateId));
-
+                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
         experience.setCandidate(candidate);
-        experience.setCreatedAt(LocalDateTime.now());
-        experience.setUpdatedAt(LocalDateTime.now());
-
         return experienceRepository.save(experience);
     }
 
     @Override
+    @Transactional
     public Experience updateExperience(Long experienceId, UpdateExperienceDto dto) {
         Experience existing = experienceRepository.findById(experienceId)
-                .orElseThrow(() -> new IllegalArgumentException("Experience not found with id: " + experienceId));
+                .orElseThrow(() -> new EntityNotFoundException("Experience not found with id: " + experienceId));
 
-        if (dto.getTitrePoste() != null) existing.setTitrePoste(dto.getTitrePoste());
-        if (dto.getEntreprise() != null) existing.setEntreprise(dto.getEntreprise());
-        if (dto.getDateDebut() != null) existing.setDateDebut(dto.getDateDebut());
-        if (dto.getDateFin() != null) existing.setDateFin(dto.getDateFin());
+        if (dto.getJobTitle() != null) existing.setJobTitle(dto.getJobTitle());
+        if (dto.getCompanyName() != null) existing.setCompanyName(dto.getCompanyName());
+        if (dto.getStartDate() != null) existing.setStartDate(dto.getStartDate());
+        if (dto.getEndDate() != null) existing.setEndDate(dto.getEndDate());
         if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
-        if (dto.getLieu() != null) existing.setLieu(dto.getLieu());
-        if (dto.getEnCours() != null) existing.setEnCours(dto.getEnCours());
-        if (dto.getSiteEntreprise() != null) existing.setSiteEntreprise(dto.getSiteEntreprise());
-        if (dto.getTypeContrat() != null) existing.setTypeContrat(dto.getTypeContrat());
+        if (dto.getLocation() != null) existing.setLocation(dto.getLocation());
+        if (dto.getIsCurrent() != null) existing.setIsCurrent(dto.getIsCurrent());
+        if (dto.getContractType() != null) existing.setContractType(dto.getContractType());
         if (dto.getTechnologies() != null) existing.setTechnologies(dto.getTechnologies());
-
-        existing.setUpdatedAt(LocalDateTime.now());
 
         return experienceRepository.save(existing);
     }
 
     @Override
-    public Experience deleteExperience(Long experienceId) {
-        Experience existing = experienceRepository.findById(experienceId)
-                .orElseThrow(() -> new IllegalArgumentException("Experience not found with id: " + experienceId));
-
-        experienceRepository.delete(existing);
-        return existing;
+    @Transactional
+    public void deleteExperience(Long experienceId) {
+        if (!experienceRepository.existsById(experienceId)) {
+            throw new EntityNotFoundException("Experience not found with id: " + experienceId);
+        }
+        experienceRepository.deleteExperienceById(experienceId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Experience> getExperienceById(Long experienceId) {
         return experienceRepository.findById(experienceId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Experience> getAllExperiencesByCandidateId(Long candidateId) {
-        return experienceRepository.findByCandidate_CandidateId(candidateId);
+        return experienceRepository.findByCandidateId(candidateId);
     }
 }
-

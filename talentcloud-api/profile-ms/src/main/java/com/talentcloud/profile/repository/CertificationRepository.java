@@ -3,11 +3,17 @@ package com.talentcloud.profile.repository;
 import com.talentcloud.profile.model.Candidate;
 import com.talentcloud.profile.model.Certification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface CertificationRepository extends JpaRepository<Certification, Long> {
 
-    // Corrected method to find by candidate's relationship, not by ID
-    List<Certification> findByCandidate(Candidate candidate);  // Correct query to find certifications for a specific candidate}
+    List<Certification> findByCandidate(Candidate candidate);
+
+    @Modifying
+    @Query("DELETE FROM Certification c WHERE c.candidate.id = :candidateId")
+    void deleteByCandidateId(@Param("candidateId") Long candidateId);
 }

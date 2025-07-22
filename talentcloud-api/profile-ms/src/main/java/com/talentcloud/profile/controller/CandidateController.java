@@ -1,97 +1,103 @@
 package com.talentcloud.profile.controller;
 
-
+import com.talentcloud.profile.dto.CreateCandidateDto;
 import com.talentcloud.profile.dto.UpdateCandidateDto;
-
-import com.talentcloud.profile.dto.ErrorResponse;
-import com.talentcloud.profile.model.Candidate;
 import com.talentcloud.profile.iservice.IServiceCandidate;
+import com.talentcloud.profile.model.Candidate;
+import com.talentcloud.profile.model.Profile;
+import com.talentcloud.profile.service.LambdaService;
+import com.talentcloud.profile.service.ProfileService;
+import com.talentcloud.profile.service.S3Service;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
+
 
 @RestController
-@RequestMapping("/api/candidates")
+@RequestMapping("/api/v1/candidate")
 public class CandidateController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
+    
     private final IServiceCandidate candidateService;
+    private final ProfileService profileService;
+    private final S3Service s3Service;
+    private final LambdaService lambdaService;
 
-    @Autowired
-    public CandidateController(IServiceCandidate candidateService) {
+    @Value("${aws.s3.bucket-name}")
+    private String bucketName;
+
+    public CandidateController(IServiceCandidate candidateService, ProfileService profileService, 
+                              S3Service s3Service, LambdaService lambdaService) {
         this.candidateService = candidateService;
+        this.profileService = profileService;
+        this.s3Service = s3Service;
+        this.lambdaService = lambdaService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Candidate> createCandidateProfile(@RequestBody @Valid Candidate candidate) {
-        Candidate savedCandidate = candidateService.createCandidateProfile(candidate);
-        return ResponseEntity.ok(savedCandidate);
-    }
+    @PostMapping("/me/upload-cv")
+    public ResponseEntity<String> uploadMyCv(@AuthenticationPrincipal Jwt jwt, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Cannot upload an empty file.");
+        }
+        
+        String authUserId = jwt.getClaimAsString("sub");
+        String uniqueFileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        String s3Key = String.format("resumes/%s", uniqueFileName);
 
-    @PutMapping("/{candidateId}/block")
-    public ResponseEntity<?> blockCandidateProfile(@PathVariable Long candidateId) {
         try {
-            Candidate blockedCandidate = candidateService.blockProfile(candidateId);
-            return ResponseEntity.ok(blockedCandidate);
+            // 1. Upload file to S3
+            logger.info("Uploading CV to S3 for user {}", authUserId);
+            s3Service.uploadFile(bucketName, s3Key, file);
+            
+            // 2. Trigger Lambda function to parse the CV
+            logger.info("Triggering Lambda function for CV parsing");
+            lambdaService.triggerCvParsing(s3Key, authUserId, bucketName);
+            
+            return ResponseEntity.ok("CV uploaded successfully and processing started. You will receive a notification when complete.");
         } catch (Exception e) {
-            // Error response for when the blocking fails
-            ErrorResponse errorResponse = new ErrorResponse(
-                    "Error blocking candidate: " + e.getMessage(),
-                    "Internal Server Error",
-                    LocalDateTime.now(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.value()
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            logger.error("Failed to process CV upload", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to process CV upload: " + e.getMessage(), e);
         }
     }
 
-    // Get candidate by ID
-    @GetMapping("/{candidateId}")
-    public ResponseEntity<?> getCandidateById(@PathVariable Long candidateId) {
-        Optional<Candidate> optionalCandidate = candidateService.getCandidateById(candidateId);
+    @PostMapping("/me")
+    public ResponseEntity<?> createMyCandidateProfile(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid CreateCandidateDto dto) {
+        Profile userProfile = profileService.findOrCreateProfile(jwt.getClaimAsString("sub"), jwt.getClaimAsString("email"), jwt.getClaimAsString("given_name"), jwt.getClaimAsString("family_name"));
 
-        if (optionalCandidate.isPresent()) {
-            return ResponseEntity.ok(optionalCandidate.get());
-        }else {
-            ErrorResponse errorResponse = new ErrorResponse(
-                    "Candidate not found with id " + candidateId,
-                    "Not Found",
-                    LocalDateTime.now(),
-                    HttpStatus.NOT_FOUND.value()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        if (candidateService.getCandidateProfileByProfileUserId(userProfile.getId()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Candidate profile already exists for this user.");
         }
+
+        Candidate candidate = new Candidate();
+        candidate.setProfileUserId(userProfile.getId());
+        candidate.setResumeUrl(dto.getResumeUrl());
+        candidate.setJobTitle(dto.getJobTitle());
+        candidate.setJobCategory(dto.getJobCategory());
+        candidate.setVisibilitySettings(dto.getVisibilitySettings());
+
+        Candidate createdCandidate = candidateService.createCandidateProfile(candidate);
+        return new ResponseEntity<>(createdCandidate, HttpStatus.CREATED);
     }
 
-    // Get all candidates
-    @GetMapping("/all")
-    public ResponseEntity<List<Candidate>> getAllCandidates() {
-        List<Candidate> candidates = candidateService.getAllCandidates();
-        return new ResponseEntity<>(candidates, HttpStatus.OK);
+    @PutMapping("/me")
+    public ResponseEntity<Candidate> editMyCandidateDetails(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid UpdateCandidateDto dto) {
+        Profile userProfile = profileService.findOrCreateProfile(jwt.getClaimAsString("sub"), jwt.getClaimAsString("email"), jwt.getClaimAsString("given_name"), jwt.getClaimAsString("family_name"));
+
+        Candidate candidate = candidateService.getCandidateProfileByProfileUserId(userProfile.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate profile not found for authenticated user."));
+
+        Candidate updatedCandidate = candidateService.editCandidateProfile(candidate.getId(), dto);
+        return ResponseEntity.ok(updatedCandidate);
     }
-
-
-    @PutMapping("/{candidateId}/edit")
-    public ResponseEntity<?> editCandidateProfile(
-            @PathVariable Long candidateId,
-            @RequestBody @Valid UpdateCandidateDto dto
-    ) {
-        try {
-            Candidate updatedCandidate = candidateService.editCandidateProfile(candidateId, dto);
-            return ResponseEntity.ok(updatedCandidate);
-        } catch (Exception e) {
-            ErrorResponse errorResponse = new ErrorResponse(
-                    "Error updating candidate profile: " + e.getMessage(),
-                    "Internal Server Error",
-                    LocalDateTime.now(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.value()
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
-    }
-
 }

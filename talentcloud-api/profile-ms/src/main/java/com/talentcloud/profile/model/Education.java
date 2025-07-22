@@ -1,12 +1,13 @@
 package com.talentcloud.profile.model;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,30 +17,41 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Education {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String institution;
-    private String diplome;
-    private String domaineEtude;
-    private LocalDate dateDebut;
-    private LocalDate dateFin;
-    private Double moyenne;
-    private Boolean enCours;
+
+    @Column(name = "institution_name")
+    private String institutionName;
+
+    @Column(name = "degree")
+    private String degree;
+
+    @Column(name = "field_of_study")
+    private String fieldOfStudy;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    @Column(name = "is_current")
+    private Boolean isCurrent;
+
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
     @LastModifiedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(insertable = false)
-    private LocalDateTime updatedAt;
-    @ManyToOne
-    @JoinColumn(name = "candidate_id")
-    @JsonIgnore  // 🛑 Prevents infinite loop during serialization
+    private LocalDateTime updated_at;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "candidate_id", nullable = false)
+    @JsonBackReference(value = "candidate-educations")
     private Candidate candidate;
 }
-

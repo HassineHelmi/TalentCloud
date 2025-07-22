@@ -1,15 +1,20 @@
 package com.talentcloud.profile.iservice;
 
+import com.talentcloud.profile.dto.CandidatePublicProfileDto;
 import com.talentcloud.profile.dto.UpdateCandidateDto;
+import com.talentcloud.profile.exception.CandidateNotFoundException;
 import com.talentcloud.profile.model.Candidate;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IServiceCandidate {
-    Candidate createCandidateProfile(Candidate candidate);
-    Candidate blockProfile(Long candidateId) throws Exception;
-    Candidate editCandidateProfile(Long candidateId, UpdateCandidateDto dto) throws Exception;
-    Optional<Candidate> getCandidateById(Long candidateId);  // Get candidate by ID
-    List<Candidate> getAllCandidates();  // Get all candidates
+        Candidate createCandidateProfile(Candidate candidate);
+        Candidate blockProfile(Long candidateId) throws CandidateNotFoundException;
+        Candidate editCandidateProfile(Long candidateId, UpdateCandidateDto dto) throws CandidateNotFoundException;
+        Optional<Candidate> getCandidateById(Long candidateId);
+        List<Candidate> getAllCandidates();
+        Optional<Candidate> getCandidateProfileByProfileUserId(Long profileUserId);
+        List<CandidatePublicProfileDto> getAllCandidatesAsPublicProfile();
+        Optional<CandidatePublicProfileDto> getCandidateByIdAsPublicProfile(Long candidateId);
 }

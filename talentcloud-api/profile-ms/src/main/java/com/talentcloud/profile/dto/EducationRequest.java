@@ -1,15 +1,13 @@
 package com.talentcloud.profile.dto;
 
-
 import java.time.LocalDate;
 
 public record EducationRequest(
-        String institution,
-        String diplome,
-        String domaineEtude,
-        LocalDate dateDebut,
-        LocalDate dateFin,
-        Double moyenne,
-        Boolean enCours
-) {}
+        String institutionName,
+        String degree,
+        String fieldOfStudy,
+        LocalDate startDate,
+        LocalDate endDate,
 
+        Boolean isCurrent // Renamed
+) {}

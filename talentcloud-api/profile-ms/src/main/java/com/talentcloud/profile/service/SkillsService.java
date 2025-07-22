@@ -2,7 +2,7 @@ package com.talentcloud.profile.service;
 
 import com.talentcloud.profile.iservice.IServiceSkills;
 import com.talentcloud.profile.model.Skills;
-import com.talentcloud.profile.dto.UpdateSkillsDto;  // Import the DTO
+import com.talentcloud.profile.dto.UpdateSkillsDto;
 import com.talentcloud.profile.repository.SkillsRepository;
 import com.talentcloud.profile.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,9 @@ public class SkillsService implements IServiceSkills {
 
     @Override
     public Optional<Skills> getSkillsByCandidateId(Long candidateId) {
-        return skillsRepository.findByCandidate_CandidateId(candidateId);
+        return skillsRepository.findByCandidate_Id(candidateId)
+                .stream()
+                .findFirst(); // Assuming you want to return the first skills found for the candidate
     }
 
     @Override
@@ -33,7 +35,8 @@ public class SkillsService implements IServiceSkills {
         return candidateRepository.findById(candidateId)
                 .map(candidate -> {
                     skills.setCandidate(candidate);
-                    skills.setCreatedAt(LocalDateTime.now());  // Set the created_at timestamp
+                    skills.setCreated_at(LocalDateTime.now());
+                    skills.setUpdated_at(LocalDateTime.now()); // Set updated_at on creation as well
                     return skillsRepository.save(skills);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Candidate not found with ID: " + candidateId));
@@ -43,27 +46,23 @@ public class SkillsService implements IServiceSkills {
     public Skills updateSkills(Long skillsId, UpdateSkillsDto updateSkillsDto) {
         Skills existingSkills = skillsRepository.findById(skillsId)
                 .orElseThrow(() -> new IllegalArgumentException("Skills not found with id: " + skillsId));
-
         // Update the skills with data from the DTO
-        existingSkills.setProgrammingLanguages(updateSkillsDto.getProgrammingLanguages());
+        existingSkills.setProgrammingLanguages(updateSkillsDto.getProgrammingLanguage()); // Updated field
         existingSkills.setSoftSkills(updateSkillsDto.getSoftSkills());
-        existingSkills.setTechnicalSkills(updateSkillsDto.getTechnicalSkills());
+        existingSkills.setTechnicalSkill(updateSkillsDto.getTechnicalSkill()); // Updated field
         existingSkills.setToolsAndTechnologies(updateSkillsDto.getToolsAndTechnologies());
-        existingSkills.setCustomSkills(updateSkillsDto.getCustomSkills());
+        existingSkills.setCustomSkills(updateSkillsDto.getCustomSkill()); // Updated field
 
         // Set the updatedAt timestamp to the current time
-        existingSkills.setUpdatedAt(LocalDateTime.now());
-
+        existingSkills.setUpdated_at(LocalDateTime.now());
         // Save and return the updated skills
         return skillsRepository.save(existingSkills);
     }
-
 
     @Override
     public void deleteSkills(Long skillsId) {
         Skills existingSkills = skillsRepository.findById(skillsId)
                 .orElseThrow(() -> new IllegalArgumentException("Skills not found with id: " + skillsId));
-
         skillsRepository.delete(existingSkills);
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/skills")
+@RequestMapping("/api/v1/skills")
 public class SkillsController {
 
     private final IServiceSkills skillsService;
@@ -25,8 +25,8 @@ public class SkillsController {
     @GetMapping("/candidate/{candidateId}")
     public ResponseEntity<Skills> getSkillsByCandidateId(@PathVariable Long candidateId) {
         return skillsService.getSkillsByCandidateId(candidateId)
-                .map(skills -> ResponseEntity.ok(skills))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .stream().map(ResponseEntity::ok)
+                .findAny().orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // POST: Add skills for a candidate

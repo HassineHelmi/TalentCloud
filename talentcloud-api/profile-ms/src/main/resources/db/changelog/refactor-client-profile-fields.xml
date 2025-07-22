@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20250609-1-add-contact-fields-to-profiles" author="backend-ai">
+        <addColumn tableName="profiles">
+            <column name="phone_number" type="varchar(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <comment>Adds phone_number and address to the profiles table to centralize contact info.</comment>
+    </changeSet>
+
+    <changeSet id="20250609-2-migrate-client-contact-data" author="backend-ai">
+        <sql>
+            UPDATE profiles p
+            SET
+                phone_number = c.phone_number,
+                address = c.address
+                FROM clients c
+            WHERE p.id = c.profile_id;
+        </sql>
+        <comment>Migrates existing address and phone number data from clients to the profiles table.</comment>
+    </changeSet>
+
+    <changeSet id="20250609-3-drop-redundant-fields-from-clients" author="backend-ai">
+        <dropColumn tableName="clients" columnName="email"/>
+        <dropColumn tableName="clients" columnName="phone_number"/>
+        <dropColumn tableName="clients" columnName="address"/>
+        <comment>Removes redundant email, phone_number, and address columns from the clients table.</comment>
+    </changeSet>
+
+</databaseChangeLog>

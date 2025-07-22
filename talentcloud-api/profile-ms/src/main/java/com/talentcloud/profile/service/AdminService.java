@@ -1,4 +1,32 @@
 package com.talentcloud.profile.service;
 
-public class AdminService {
+import com.talentcloud.profile.iservice.IServiceAdmin;
+import com.talentcloud.profile.model.Admin;
+import com.talentcloud.profile.repository.AdminRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+@Transactional
+public class AdminService implements IServiceAdmin {
+
+    private final AdminRepository adminRepository;
+
+    @Autowired
+    public AdminService(AdminRepository adminRepository) {
+        this.adminRepository = adminRepository;
+    }
+
+    @Override
+    public Optional<Admin> getAdminProfileByProfileUserId(Long profileUserId) { // Changed parameter name
+        return adminRepository.findByProfileUserId(profileUserId);
+    }
+
+    @Override
+    public Admin createAdminProfile(Admin admin) {
+        return adminRepository.save(admin);
+    }
 }
