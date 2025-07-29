@@ -30,21 +30,17 @@ public class CandidateService implements IServiceCandidate {
     @Override
     @Transactional(readOnly = true)
     public List<CandidatePublicProfileDto> getAllCandidatesAsPublicProfile() {
-        List<Candidate> candidates = candidateRepository.findAll();
-        if (candidates.isEmpty()) {
+        List<Object[]> results = candidateRepository.findAllCandidatesWithProfiles();
+        if (results.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Long> profileIds = candidates.stream()
-                .map(Candidate::getProfileUserId)
-                .distinct()
-                .collect(Collectors.toList());
-
-        Map<Long, Profile> profileMap = profileRepository.findAllById(profileIds).stream()
-                .collect(Collectors.toMap(Profile::getId, profile -> profile));
-
-        return candidates.stream()
-                .map(candidate -> convertToPublicProfileDto(candidate, profileMap.get(candidate.getProfileUserId())))
+        return results.stream()
+                .map(result -> {
+                    Candidate candidate = (Candidate) result[0];
+                    Profile profile = (Profile) result[1];
+                    return convertToPublicProfileDto(candidate, profile);
+                })
                 .collect(Collectors.toList());
     }
 

@@ -1,9 +1,12 @@
 package com.talentcloud.profile.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -45,9 +48,20 @@ public class AwsConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-    
+
     @Bean
+    @Primary // The @Primary annotation ensures this custom ObjectMapper is used everywhere in the application.
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // This is the crucial part: it registers the module that teaches Jackson
+        // how to handle Java 8+ date/time objects like LocalDateTime and LocalDate.
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // This line is optional, but it makes the JSON output more readable
+        // by formatting dates as "2025-07-29T02:40:00.123Z" instead of a complex object.
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        return objectMapper;
     }
-}
+    }

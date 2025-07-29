@@ -1,13 +1,14 @@
 package com.talentcloud.profile.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import jakarta.persistence.*;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "admins")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Admin {
@@ -16,5 +17,17 @@ public class Admin {
     private Long id;
 
     @Column(name = "profile_id", nullable = false, unique = true)
-    private Long profileUserId; // Renamed from profile_user_id to profileUserId
+    private Long profileUserId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Admin admin = (Admin) o;
+        return Objects.equals(id, admin.id) && Objects.equals(profileUserId, admin.profileUserId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, profileUserId);
+    }
 }

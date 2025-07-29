@@ -15,7 +15,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "skills")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)

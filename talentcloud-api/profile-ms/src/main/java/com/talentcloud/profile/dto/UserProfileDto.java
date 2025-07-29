@@ -10,7 +10,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL) // Ensures that null fields (like other roles) are not in the JSON response
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfileDto {
 
     private Profile profile;

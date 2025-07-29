@@ -1,14 +1,15 @@
 package com.talentcloud.profile.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.URL;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "profiles")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Profile {
@@ -31,4 +32,15 @@ public class Profile {
     @Column(name = "linkedin_url")
     private String linkedInUrl;
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Profile profile = (Profile) o;
+        return Objects.equals(id, profile.id) && Objects.equals(authServiceUserId, profile.authServiceUserId) && Objects.equals(email, profile.email) && Objects.equals(firstName, profile.firstName) && Objects.equals(lastName, profile.lastName) && Objects.equals(phoneNumber, profile.phoneNumber) && Objects.equals(address, profile.address) && Objects.equals(linkedInUrl, profile.linkedInUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, authServiceUserId, email, firstName, lastName, phoneNumber, address, linkedInUrl);
+    }
 }

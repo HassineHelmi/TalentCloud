@@ -22,16 +22,12 @@ public class ProfileService implements IServiceProfile {
     private final CandidateRepository candidateRepository;
     private final ClientRepository clientRepository;
     private final AdminRepository adminRepository;
-    private final S3Service s3Service;
-    private final CvProcessingService cvProcessingService;
 
-    public ProfileService(ProfileRepository profileRepository, CandidateRepository candidateRepository, ClientRepository clientRepository, AdminRepository adminRepository, S3Service s3Service, CvProcessingService cvProcessingService) {
+    public ProfileService(ProfileRepository profileRepository, CandidateRepository candidateRepository, ClientRepository clientRepository, AdminRepository adminRepository) {
         this.profileRepository = profileRepository;
         this.candidateRepository = candidateRepository;
         this.clientRepository = clientRepository;
         this.adminRepository = adminRepository;
-        this.s3Service = s3Service;
-        this.cvProcessingService = cvProcessingService;
     }
 
     @Override
@@ -92,11 +88,6 @@ public class ProfileService implements IServiceProfile {
         return userProfileDto;
     }
 
-    /**
-     * Find a profile by email address
-     * @param email The email address to search for
-     * @return Optional containing the profile if found
-     */
     @Transactional(readOnly = true)
     public Optional<Profile> findProfileByEmail(String email) {
         return profileRepository.findByEmail(email);
