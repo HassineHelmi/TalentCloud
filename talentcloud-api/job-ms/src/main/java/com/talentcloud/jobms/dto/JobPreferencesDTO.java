@@ -1,26 +1,24 @@
 package com.talentcloud.jobms.dto;
 
-
 import com.talentcloud.jobms.model.JobPreferences;
-import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
 public record JobPreferencesDTO(
         Long id,
-        @NotNull Long candidateId,
-        String preferredRoles,
-        String preferredLocations,
-        String preferredIndustries,
-        boolean alertsEnabled
+        String candidateAuthId,
+        List<String> preferredRoles,
+        List<String> preferredLocations,
+        List<String> preferredIndustries,
+        Boolean alertsEnabled
 ) {
-
     public static JobPreferencesDTO fromEntity(JobPreferences prefs) {
         return new JobPreferencesDTO(
                 prefs.getId(),
-                prefs.getCandidateId(),
+                prefs.getCandidateAuthId(),
                 prefs.getPreferredRoles(),
                 prefs.getPreferredLocations(),
                 prefs.getPreferredIndustries(),
-                prefs.isAlertsEnabled()
+                prefs.getAlertsEnabled()
         );
     }
 }

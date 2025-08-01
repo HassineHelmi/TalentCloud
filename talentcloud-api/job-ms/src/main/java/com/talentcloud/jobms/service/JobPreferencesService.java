@@ -1,12 +1,14 @@
 package com.talentcloud.jobms.service;
 
-
+import com.talentcloud.jobms.dto.CreateJobPreferencesDTO;
 import com.talentcloud.jobms.dto.JobPreferencesDTO;
 import com.talentcloud.jobms.model.JobPreferences;
 import com.talentcloud.jobms.repository.JobPreferencesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -15,11 +17,11 @@ public class JobPreferencesService {
     private final JobPreferencesRepository preferencesRepository;
 
     @Transactional
-    public JobPreferencesDTO saveOrUpdatePreferences(JobPreferencesDTO dto) {
-        JobPreferences prefs = preferencesRepository.findByCandidateId(dto.candidateId())
+    public JobPreferencesDTO saveOrUpdatePreferences(CreateJobPreferencesDTO dto, String candidateAuthId) {
+        JobPreferences prefs = preferencesRepository.findByCandidateAuthId(candidateAuthId)
                 .orElse(new JobPreferences());
 
-        prefs.setCandidateId(dto.candidateId());
+        prefs.setCandidateAuthId(candidateAuthId);
         prefs.setPreferredRoles(dto.preferredRoles());
         prefs.setPreferredLocations(dto.preferredLocations());
         prefs.setPreferredIndustries(dto.preferredIndustries());
@@ -30,9 +32,9 @@ public class JobPreferencesService {
     }
 
     @Transactional(readOnly = true)
-    public JobPreferencesDTO getPreferences(Long candidateId) {
-        return preferencesRepository.findByCandidateId(candidateId)
+    public JobPreferencesDTO getPreferences(String candidateAuthId) {
+        return preferencesRepository.findByCandidateAuthId(candidateAuthId)
                 .map(JobPreferencesDTO::fromEntity)
-                .orElse(new JobPreferencesDTO(null, candidateId, null, null, null, false));
+                .orElse(new JobPreferencesDTO(null, candidateAuthId, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), false));
     }
 }

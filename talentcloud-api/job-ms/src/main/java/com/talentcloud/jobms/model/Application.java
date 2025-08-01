@@ -1,23 +1,19 @@
 package com.talentcloud.jobms.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "applications")
+@Table(name = "applications", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"candidate_auth_id", "job_id"})
+})
 @Getter
 @Setter
-
 @NoArgsConstructor
 @AllArgsConstructor
 public class Application {
@@ -25,28 +21,37 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private Long candidateId; // Foreign key to the Candidate in the profile-ms
+    @Column(nullable = false, updatable = false)
+    private String candidateAuthId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id", nullable = false)
     private Job job;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ApplicationStatus status;
 
-
-    private Double jobFitScore; // For AI-Based Job Fit Scoring
+    private Double jobFitScore;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "current_stage_id") // Can be nullable
+    @JoinColumn(name = "current_stage_id")
     private EvaluationStage currentStage;
 
-    @CreationTimestamp
-    @Column(name = "applied_at", updatable = false)
+    @Column(nullable = false, updatable = false)
     private Instant appliedAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
     private Instant updatedAt;
+
+    @PrePersist
+    protected void onPersist() {
+        this.status = ApplicationStatus.APPLIED;
+        this.appliedAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }

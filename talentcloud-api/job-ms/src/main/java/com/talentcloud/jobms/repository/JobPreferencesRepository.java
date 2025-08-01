@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface JobPreferencesRepository extends JpaRepository<JobPreferences, Long> {
-    Optional<JobPreferences> findByCandidateId(Long candidateId);
+    Optional<JobPreferences> findByCandidateAuthId(String candidateAuthId);
 }

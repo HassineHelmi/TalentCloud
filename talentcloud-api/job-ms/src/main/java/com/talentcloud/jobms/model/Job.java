@@ -1,9 +1,11 @@
 package com.talentcloud.jobms.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -19,24 +21,24 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String title;
 
     @Lob
     private String description;
 
-    @NotBlank
     private String location;
 
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
 
-    @NotNull
-    private Long clientId; // Foreign key to the Client in the profile-ms
+    @Column(nullable = false, updatable = false)
+    private String clientAuthId;
 
     private boolean active;
 
     private LocalDateTime deadline;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -44,4 +46,10 @@ public class Job {
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EvaluationStage> evaluationStages;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.active = true;
+    }
 }

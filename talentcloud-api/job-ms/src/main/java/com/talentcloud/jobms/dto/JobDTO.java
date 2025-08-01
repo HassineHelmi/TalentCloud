@@ -11,16 +11,11 @@ public record JobDTO(
         String description,
         String location,
         ContractType contractType,
-        Long clientId,
+        String clientAuthId,
         boolean active,
         LocalDateTime deadline,
         LocalDateTime createdAt
 ) {
-    /**
-     * Converts a Job entity to a JobDTO.
-     * @param job The Job entity.
-     * @return A new JobDTO instance.
-     */
     public static JobDTO fromEntity(Job job) {
         return new JobDTO(
                 job.getId(),
@@ -28,7 +23,7 @@ public record JobDTO(
                 job.getDescription(),
                 job.getLocation(),
                 job.getContractType(),
-                job.getClientId(),
+                job.getClientAuthId(),
                 job.isActive(),
                 job.getDeadline(),
                 job.getCreatedAt()

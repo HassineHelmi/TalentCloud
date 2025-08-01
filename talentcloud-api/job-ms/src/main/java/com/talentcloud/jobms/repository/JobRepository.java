@@ -9,7 +9,6 @@ import java.util.List;
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
     List<Job> findByActiveTrue();
-    List<Job> findByClientId(Long clientId);
-
+    List<Job> findByClientAuthId(String clientAuthId);
     List<Job> findByActiveTrueOrderByCreatedAtDesc();
 }

@@ -1,6 +1,4 @@
 package com.talentcloud.jobms.service;
-
-
 import com.talentcloud.jobms.dto.JobOfferDTO;
 import com.talentcloud.jobms.exception.ApplicationNotFoundException;
 import com.talentcloud.jobms.model.Application;

@@ -3,9 +3,7 @@ package com.talentcloud.jobms.dto;
 import com.talentcloud.jobms.model.JobOffer;
 import com.talentcloud.jobms.model.OfferStatus;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 

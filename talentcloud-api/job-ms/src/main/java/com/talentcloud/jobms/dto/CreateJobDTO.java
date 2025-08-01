@@ -1,7 +1,7 @@
 package com.talentcloud.jobms.dto;
 
 import com.talentcloud.jobms.model.ContractType;
-import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -20,9 +20,6 @@ public record CreateJobDTO(
         @NotNull(message = "Contract type is required.")
         ContractType contractType,
 
-        @NotNull(message = "Client ID is required.")
-        Long clientId,
-
-        @Future(message = "Deadline must be in the future.")
+        @FutureOrPresent(message = "Deadline must be in the present or future.")
         LocalDateTime deadline
 ) {}
