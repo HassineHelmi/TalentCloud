@@ -1,6 +1,7 @@
 package com.talentcloud.jobms.dto;
 
 import com.talentcloud.jobms.model.JobPreferences;
+import com.talentcloud.jobms.service.JobPreferencesService;
 import java.util.List;
 
 public record JobPreferencesDTO(
@@ -15,10 +16,10 @@ public record JobPreferencesDTO(
         return new JobPreferencesDTO(
                 prefs.getId(),
                 prefs.getCandidateAuthId(),
-                prefs.getPreferredRoles(),
-                prefs.getPreferredLocations(),
-                prefs.getPreferredIndustries(),
-                prefs.getAlertsEnabled()
+                JobPreferencesService.stringToList(prefs.getPreferredRoles()),
+                JobPreferencesService.stringToList(prefs.getPreferredLocations()),
+                JobPreferencesService.stringToList(prefs.getPreferredIndustries()),
+                prefs.isAlertsEnabled()
         );
     }
 }

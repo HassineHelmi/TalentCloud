@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 
+import java.io.Console;
 import java.util.Map;
 
 @Service
@@ -41,7 +42,6 @@ public class SqsMessageListener {
                     profileData.getLastName(),
                     profileData.getEmail(),
                     profileData.getResumeKey());
-
             // Process the message
             sqsProfileService.processProfileData(profileData);
 
