@@ -1,9 +1,0 @@
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: auth-ms
-spec:
-  host: auth-ms
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL

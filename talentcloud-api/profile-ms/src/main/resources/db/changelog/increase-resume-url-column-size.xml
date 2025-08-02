@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="20250802-1-increase-resume-url-column-size" author="backend-developer">
+        <comment>Increase resume_url column size from VARCHAR(255) to TEXT to accommodate AWS S3 presigned URLs</comment>
+        <modifyDataType tableName="candidates" columnName="resume_url" newDataType="TEXT"/>
+    </changeSet>
+
+</databaseChangeLog>

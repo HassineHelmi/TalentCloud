@@ -6,19 +6,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "experience")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -75,4 +75,17 @@ public class Experience {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime updated_at;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Experience that = (Experience) o;
+        return Objects.equals(id, that.id) && Objects.equals(jobTitle, that.jobTitle) && Objects.equals(companyName, that.companyName) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(description, that.description) && Objects.equals(location, that.location) && Objects.equals(isCurrent, that.isCurrent) && Objects.equals(contractType, that.contractType) && Objects.equals(technologies, that.technologies) && Objects.equals(candidate, that.candidate) && Objects.equals(created_at, that.created_at) && Objects.equals(updated_at, that.updated_at);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, jobTitle, companyName, startDate, endDate, description, location, isCurrent, contractType, technologies, candidate, created_at, updated_at);
+    }
 }

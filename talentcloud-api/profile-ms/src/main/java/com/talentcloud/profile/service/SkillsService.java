@@ -7,6 +7,7 @@ import com.talentcloud.profile.repository.SkillsRepository;
 import com.talentcloud.profile.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -17,13 +18,14 @@ public class SkillsService implements IServiceSkills {
     private final SkillsRepository skillsRepository;
     private final CandidateRepository candidateRepository;
 
-    @Autowired
+
     public SkillsService(SkillsRepository skillsRepository, CandidateRepository candidateRepository) {
         this.skillsRepository = skillsRepository;
         this.candidateRepository = candidateRepository;
     }
 
     @Override
+    @Transactional
     public Optional<Skills> getSkillsByCandidateId(Long candidateId) {
         return skillsRepository.findByCandidate_Id(candidateId)
                 .stream()
@@ -31,6 +33,7 @@ public class SkillsService implements IServiceSkills {
     }
 
     @Override
+    @Transactional
     public Skills addSkills(Skills skills, Long candidateId) {
         return candidateRepository.findById(candidateId)
                 .map(candidate -> {
@@ -43,6 +46,7 @@ public class SkillsService implements IServiceSkills {
     }
 
     @Override
+    @Transactional
     public Skills updateSkills(Long skillsId, UpdateSkillsDto updateSkillsDto) {
         Skills existingSkills = skillsRepository.findById(skillsId)
                 .orElseThrow(() -> new IllegalArgumentException("Skills not found with id: " + skillsId));
@@ -60,6 +64,7 @@ public class SkillsService implements IServiceSkills {
     }
 
     @Override
+    @Transactional
     public void deleteSkills(Long skillsId) {
         Skills existingSkills = skillsRepository.findById(skillsId)
                 .orElseThrow(() -> new IllegalArgumentException("Skills not found with id: " + skillsId));

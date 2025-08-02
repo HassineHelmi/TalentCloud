@@ -5,10 +5,6 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Data transfer object for parsed CV data.
- * Used for both CV parsing service and SQS message processing.
- */
 @Data
 public class CvParsedDataDto {
     // Additional fields for SQS processing
