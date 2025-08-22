@@ -22,10 +22,12 @@ public class SqsProfileService {
 
     private final ProfileRepository profileRepository;
     private final CandidateRepository candidateRepository;
+    private final S3Service s3Service;
 
-    public SqsProfileService(ProfileRepository profileRepository, CandidateRepository candidateRepository) {
+    public SqsProfileService(ProfileRepository profileRepository, CandidateRepository candidateRepository, S3Service s3Service) {
         this.profileRepository = profileRepository;
         this.candidateRepository = candidateRepository;
+        this.s3Service = s3Service;
     }
 
     @Transactional
@@ -69,7 +71,22 @@ public class SqsProfileService {
     private void hydrateCandidate(Candidate candidate, CvParsedDataDto dto) {
         candidate.setJobTitle(dto.getCurrentJob());
         candidate.setJobCategory(dto.getJobCategory());
-        candidate.setResumeUrl(dto.getResumeKey());
+
+        // Generate presigned URL for the resume
+        if (dto.getResumeKey() != null && dto.getS3Bucket() != null) {
+            try {
+                String presignedUrl = s3Service.generatePresignedUrl(dto.getS3Bucket(), dto.getResumeKey());
+                candidate.setResumeUrl(presignedUrl);
+                log.info("Generated presigned URL for resume: {}", dto.getResumeKey());
+            } catch (Exception e) {
+                log.error("Failed to generate presigned URL for resume key: {}", dto.getResumeKey(), e);
+                // Fallback to storing just the key if presigned URL generation fails
+                candidate.setResumeUrl(dto.getResumeKey());
+            }
+        } else {
+            candidate.setResumeUrl(dto.getResumeKey());
+        }
+
         candidate.setVisibilitySettings(VisibilitySettings.PUBLIC);
 
         candidate.getExperiences().clear();

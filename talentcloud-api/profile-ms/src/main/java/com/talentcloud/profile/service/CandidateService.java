@@ -9,6 +9,7 @@ import com.talentcloud.profile.model.Profile;
 import com.talentcloud.profile.repository.CandidateRepository;
 import com.talentcloud.profile.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +21,16 @@ public class CandidateService implements IServiceCandidate {
 
     private final CandidateRepository candidateRepository;
     private final ProfileRepository profileRepository;
+    private final S3Service s3Service;
+
+    @Value("${aws.s3.bucket-name}")
+    private String bucketName;
 
     @Autowired
-    public CandidateService(CandidateRepository candidateRepository, ProfileRepository profileRepository) {
+    public CandidateService(CandidateRepository candidateRepository, ProfileRepository profileRepository, S3Service s3Service) {
         this.candidateRepository = candidateRepository;
         this.profileRepository = profileRepository;
+        this.s3Service = s3Service;
     }
 
     @Override
@@ -57,7 +63,20 @@ public class CandidateService implements IServiceCandidate {
         CandidatePublicProfileDto dto = new CandidatePublicProfileDto();
 
         dto.setId(candidate.getId());
-        dto.setResumeUrl(candidate.getResumeUrl());
+
+        // Generate fresh presigned URL for resume if stored URL looks like an S3 key
+        String resumeUrl = candidate.getResumeUrl();
+        if (resumeUrl != null && !resumeUrl.startsWith("http")) {
+            // This looks like an S3 key, generate a fresh presigned URL
+            try {
+                resumeUrl = s3Service.generatePresignedUrl(bucketName, resumeUrl);
+            } catch (Exception e) {
+                // Log error but keep original URL as fallback
+                System.err.println("Failed to generate presigned URL for resume: " + e.getMessage());
+            }
+        }
+        dto.setResumeUrl(resumeUrl);
+
         dto.setJobTitle(candidate.getJobTitle());
         dto.setJobCategory(candidate.getJobCategory());
         dto.setVisibilitySettings(candidate.getVisibilitySettings());
